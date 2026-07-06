@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selecionar Aluno - FGI</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <header class="app-header">
+            <div class="logo-container">
+                <span class="logo-emoji" aria-hidden="true">🧩</span>
+                <span class="logo-text">FGI — Atendimento</span>
+            </div>
+            <span class="game-meta-item" style="color: var(--color-text-muted);">Novo Atendimento</span>
+        </header>
+
+        <!-- Barra de Progresso do Fluxo -->
+        <div class="step-progress"></div>
+
+        <main class="card">
+            <h1 class="app-title" style="margin-bottom: 8px;">Quem vai jogar hoje?</h1>
+            <p class="app-subtitle" style="margin-bottom: 32px;">Selecione um aluno da lista para iniciar a sessão.</p>
+
+            <div class="grid-2" style="margin-bottom: 32px;">
+                <!-- Lucas -->
+                <div class="interactive-card" data-student="Lucas">
+                    <div class="card-avatar">👦</div>
+                    <div class="card-name">Lucas</div>
+                    <div class="card-desc">6 anos • Gosta de contagem e formas geométricas</div>
+                </div>
+
+                <!-- Maria -->
+                <div class="interactive-card" data-student="Maria">
+                    <div class="card-avatar">👧</div>
+                    <div class="card-name">Maria</div>
+                    <div class="card-desc">8 anos • Estimulada por sons agradáveis e cores vivas</div>
+                </div>
+
+                <!-- Pedro -->
+                <div class="interactive-card" data-student="Pedro">
+                    <div class="card-avatar">👦</div>
+                    <div class="card-name">Pedro</div>
+                    <div class="card-desc">7 anos • Muito focado visualmente, prefere silêncio</div>
+                </div>
+
+                <!-- Ana -->
+                <div class="interactive-card" data-student="Ana">
+                    <div class="card-avatar">👧</div>
+                    <div class="card-name">Ana</div>
+                    <div class="card-desc">5 anos • Focada em tarefas de repetição e aprendizado básico</div>
+                </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="btn-group">
+                <a href="../index.html" class="btn btn-secondary">
+                    <span aria-hidden="true">←</span> Voltar
+                </a>
+                <button id="btn-continuar" class="btn btn-primary" disabled>
+                    Continuar <span aria-hidden="true">→</span>
+                </button>
+            </div>
+        </main>
+
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Inicializar progresso: Passo 1
+            FGI.updateStepProgress(1);
+
+            var selectedStudent = "";
+            var cards = document.querySelectorAll(".interactive-card");
+            var btnContinuar = document.getElementById("btn-continuar");
+
+            cards.forEach(function (card) {
+                card.addEventListener("click", function () {
+                    // Remover seleção dos outros
+                    cards.forEach(function (c) { c.classList.remove("selected"); });
+                    
+                    // Selecionar o atual
+                    card.classList.add("selected");
+                    selectedStudent = card.getAttribute("data-student");
+
+                    // Habilitar botão Continuar
+                    btnContinuar.disabled = false;
+                });
+            });
+
+            btnContinuar.addEventListener("click", function () {
+                if (selectedStudent) {
+                    var state = FGI.getState();
+                    state.student = selectedStudent;
+                    window.location.href = FGI.buildUrl("profile.html", state);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

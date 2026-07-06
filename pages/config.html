@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajustar Configurações - FGI</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <header class="app-header">
+            <div class="logo-container">
+                <span class="logo-emoji" aria-hidden="true">🧩</span>
+                <span class="logo-text">FGI — Atendimento</span>
+            </div>
+            <div style="text-align: right; font-size: 16px;">
+                <div>Aluno: <span id="header-student-name" class="game-meta-value">-</span></div>
+                <div>Perfil: <span id="header-profile-name" class="game-meta-value">-</span></div>
+            </div>
+        </header>
+
+        <!-- Barra de Progresso do Fluxo -->
+        <div class="step-progress"></div>
+
+        <main class="card">
+            <h1 class="app-title" style="margin-bottom: 8px;">Ajustar Configurações da Atividade</h1>
+            <p class="app-subtitle" style="margin-bottom: 32px;">As opções abaixo foram recomendadas automaticamente, mas você pode personalizá-las.</p>
+
+            <form id="config-form">
+                
+                <!-- Tempo -->
+                <div class="option-row">
+                    <div class="option-info">
+                        <div class="option-title">Tempo Limite</div>
+                        <div class="option-desc">Define o tempo máximo para concluir o jogo.</div>
+                    </div>
+                    <div class="option-controls">
+                        <label>
+                            <input type="radio" name="time" value="none" checked>
+                            <span class="radio-btn">Sem limite</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="time" value="2min">
+                            <span class="radio-btn">2 minutos</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Som -->
+                <div class="option-row">
+                    <div class="option-info">
+                        <div class="option-title">Efeitos Sonoros</div>
+                        <div class="option-desc">Sons de acerto, apoio ou toques nos botões.</div>
+                    </div>
+                    <div class="option-controls">
+                        <label>
+                            <input type="radio" name="sound" value="on" checked>
+                            <span class="radio-btn">Ligado</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="sound" value="off">
+                            <span class="radio-btn">Desligado</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Narração -->
+                <div class="option-row">
+                    <div class="option-info">
+                        <div class="option-title">Narração em Áudio</div>
+                        <div class="option-desc">Lê em voz alta as instruções e os textos do jogo.</div>
+                    </div>
+                    <div class="option-controls">
+                        <label>
+                            <input type="radio" name="narrator" value="on" checked>
+                            <span class="radio-btn">Ligada</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="narrator" value="off">
+                            <span class="radio-btn">Desligada</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Dificuldade -->
+                <div class="option-row">
+                    <div class="option-info">
+                        <div class="option-title">Dificuldade</div>
+                        <div class="option-desc">Altera o limite máximo das somas sugeridas no jogo.</div>
+                    </div>
+                    <div class="option-controls">
+                        <label>
+                            <input type="radio" name="difficulty" value="easy" checked>
+                            <span class="radio-btn">Fácil</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="difficulty" value="medium">
+                            <span class="radio-btn">Média</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="difficulty" value="hard">
+                            <span class="radio-btn">Difícil</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="btn-group">
+                    <button type="button" id="btn-voltar" class="btn btn-secondary">
+                        <span aria-hidden="true">←</span> Voltar
+                    </button>
+                    <button type="submit" id="btn-iniciar" class="btn btn-primary">
+                        Iniciar Jogo <span aria-hidden="true">→</span>
+                    </button>
+                </div>
+
+            </form>
+        </main>
+
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Inicializar progresso: Passo 3
+            FGI.updateStepProgress(3);
+
+            var state = FGI.getState();
+
+            // Atualizar cabeçalho
+            document.getElementById("header-student-name").textContent = state.student || "Lucas";
+            document.getElementById("header-profile-name").textContent = state.profile || "TEA Nível 1";
+
+            // Preencher o formulário com os valores vindos do estado (URL)
+            preencherOpcao("time", state.time);
+            preencherOpcao("sound", state.sound);
+            preencherOpcao("narrator", state.narrator);
+            preencherOpcao("difficulty", state.difficulty);
+
+            function preencherOpcao(nome, valor) {
+                if (!valor) return;
+                var input = document.querySelector('input[name="' + nome + '"][value="' + valor + '"]');
+                if (input) input.checked = true;
+            }
+
+            var btnVoltar = document.getElementById("btn-voltar");
+            var form = document.getElementById("config-form");
+
+            btnVoltar.addEventListener("click", function () {
+                window.location.href = FGI.buildUrl("profile.html", state);
+            });
+
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                // Capturar valores selecionados
+                state.time = document.querySelector('input[name="time"]:checked').value;
+                state.sound = document.querySelector('input[name="sound"]:checked').value;
+                state.narrator = document.querySelector('input[name="narrator"]:checked').value;
+                state.difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+
+                window.location.href = FGI.buildUrl("tutorial.html", state);
+            });
+        });
+    </script>
+</body>
+</html>

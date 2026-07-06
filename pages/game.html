@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogando - FGI</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="app-container" style="max-width: 1000px; padding: 12px;">
+        
+        <!-- Cabeçalho do Jogo com Metadados e Controles -->
+        <header class="game-header-bar">
+            <button id="btn-voltar" class="btn btn-secondary" style="min-height: 48px; padding: 8px 16px;">
+                <span aria-hidden="true">←</span> Sair
+            </button>
+
+            <div style="display: flex; gap: 24px; align-items: center;">
+                <div class="game-meta-item">Aluno: <span id="game-student-name" class="game-meta-value">-</span></div>
+                <div class="game-timer" aria-label="Tempo decorrido">
+                    ⏱️ <span id="game-timer-value">00:00</span>
+                </div>
+            </div>
+
+            <button id="btn-reiniciar" class="btn btn-secondary" style="min-height: 48px; padding: 8px 16px;">
+                🔄 Reiniciar
+            </button>
+        </header>
+
+        <!-- Container do Jogo (Iframe) -->
+        <main id="GameContainer">
+            <iframe id="game-frame" src="about:blank" title="Área de Jogo Inclusivo"></iframe>
+        </main>
+
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var state = FGI.getState();
+
+            // Atualizar cabeçalho
+            document.getElementById("game-student-name").textContent = state.student || "Lucas";
+
+            // Determinar nível com base na dificuldade configurada
+            var level = 1;
+            if (state.difficulty === "medium") {
+                level = 2;
+            } else if (state.difficulty === "hard") {
+                level = 3;
+            }
+
+            // URL do Iframe com parâmetros de controle da sessão
+            var iframeUrl = "../games/game001/index.html?nivel=" + level + "&som=" + state.sound;
+            var frame = document.getElementById("game-frame");
+            frame.src = iframeUrl;
+
+            // Ocultar cronômetro visual se configurado como "Sem limite"
+            if (state.time === "none") {
+                var timerEl = document.querySelector(".game-timer");
+                if (timerEl) {
+                    timerEl.style.display = "none";
+                }
+            }
+
+            // Iniciar cronômetro da sessão
+            var startTime = Date.now();
+            var timerInterval = setInterval(function () {
+                var elapsed = Math.floor((Date.now() - startTime) / 1000);
+                var minutes = Math.floor(elapsed / 60);
+                var seconds = elapsed % 60;
+                var formatted = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+                document.getElementById("game-timer-value").textContent = formatted;
+            }, 1000);
+
+            // Escutar eventos vindos do jogo (Iframe)
+            window.addEventListener("message", function (event) {
+                if (event.data && event.data.type === "GAME_FINISHED") {
+                    clearInterval(timerInterval);
+                    
+                    var elapsed = Math.floor((Date.now() - startTime) / 1000);
+                    var minutes = Math.floor(elapsed / 60);
+                    var seconds = elapsed % 60;
+                    var formatted = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+                    // Incrementar o estado e navegar para o resultado
+                    state.hits = event.data.hits;
+                    state.misses = event.data.misses;
+                    state.duration = formatted;
+
+                    window.location.href = FGI.buildUrl("result.html", state);
+                }
+            });
+
+            // Reiniciar atividade
+            document.getElementById("btn-reiniciar").addEventListener("click", function () {
+                frame.src = "about:blank";
+                setTimeout(function () {
+                    frame.src = iframeUrl;
+                    startTime = Date.now();
+                    document.getElementById("game-timer-value").textContent = "00:00";
+                }, 100);
+            });
+
+            // Voltar para a tela de configurações
+            document.getElementById("btn-voltar").addEventListener("click", function () {
+                if (confirm("Tem certeza de que deseja encerrar a atividade? O progresso atual será perdido.")) {
+                    window.location.href = FGI.buildUrl("config.html", state);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

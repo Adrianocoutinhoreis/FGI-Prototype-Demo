@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selecionar Perfil - FGI</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <header class="app-header">
+            <div class="logo-container">
+                <span class="logo-emoji" aria-hidden="true">🧩</span>
+                <span class="logo-text">FGI — Atendimento</span>
+            </div>
+            <span class="game-meta-item">Aluno: <span id="header-student-name" class="game-meta-value">-</span></span>
+        </header>
+
+        <!-- Barra de Progresso do Fluxo -->
+        <div class="step-progress"></div>
+
+        <main class="card">
+            <h1 class="app-title" style="margin-bottom: 8px;">Selecione o Perfil de Apoio</h1>
+            <p class="app-subtitle" style="margin-bottom: 24px;">Isso adaptará as configurações e recursos de acessibilidade automaticamente.</p>
+
+            <!-- Alerta de Adaptação Dinâmico -->
+            <div id="adaptation-banner" class="adaptation-alert" style="display: none;">
+                <span style="font-size: 24px;" aria-hidden="true">✨</span>
+                <span>As configurações do jogo foram adaptadas para este perfil.</span>
+            </div>
+
+            <div class="grid-3" style="margin-bottom: 32px;">
+                <!-- Aluno Típico -->
+                <div class="interactive-card" data-profile="Aluno típico">
+                    <div class="card-avatar">⭐</div>
+                    <div class="card-name">Aluno Típico</div>
+                    <div class="card-desc">Sem adaptações específicas</div>
+                </div>
+
+                <!-- TEA Nível 1 -->
+                <div class="interactive-card" data-profile="TEA Nível 1">
+                    <div class="card-avatar">🟢</div>
+                    <div class="card-name">TEA Nível 1</div>
+                    <div class="card-desc">Suporte leve, interface amigável</div>
+                </div>
+
+                <!-- TEA Nível 2 -->
+                <div class="interactive-card" data-profile="TEA Nível 2">
+                    <div class="card-avatar">🟡</div>
+                    <div class="card-name">TEA Nível 2</div>
+                    <div class="card-desc">Suporte moderado, recursos visuais</div>
+                </div>
+
+                <!-- TEA Nível 3 -->
+                <div class="interactive-card" data-profile="TEA Nível 3">
+                    <div class="card-avatar">🟠</div>
+                    <div class="card-name">TEA Nível 3</div>
+                    <div class="card-desc">Suporte severo, baixa estimulação sensorial</div>
+                </div>
+
+                <!-- TDAH -->
+                <div class="interactive-card" data-profile="TDAH">
+                    <div class="card-avatar">⚡</div>
+                    <div class="card-name">TDAH</div>
+                    <div class="card-desc">Atividades focadas com lembretes curtos</div>
+                </div>
+
+                <!-- Dislexia -->
+                <div class="interactive-card" data-profile="Dislexia">
+                    <div class="card-avatar">📖</div>
+                    <div class="card-name">Dislexia</div>
+                    <div class="card-desc">Forte suporte auditivo e fontes legíveis</div>
+                </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="btn-group">
+                <button id="btn-voltar" class="btn btn-secondary">
+                    <span aria-hidden="true">←</span> Voltar
+                </button>
+                <button id="btn-continuar" class="btn btn-primary" disabled>
+                    Continuar <span aria-hidden="true">→</span>
+                </button>
+            </div>
+        </main>
+
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Inicializar progresso: Passo 2
+            FGI.updateStepProgress(2);
+
+            var state = FGI.getState();
+            
+            // Exibir nome do aluno no cabeçalho
+            var studentNameSpan = document.getElementById("header-student-name");
+            if (state.student) {
+                studentNameSpan.textContent = state.student;
+            }
+
+            var selectedProfile = "";
+            var cards = document.querySelectorAll(".interactive-card");
+            var btnContinuar = document.getElementById("btn-continuar");
+            var btnVoltar = document.getElementById("btn-voltar");
+            var banner = document.getElementById("adaptation-banner");
+
+            cards.forEach(function (card) {
+                card.addEventListener("click", function () {
+                    // Remover seleção
+                    cards.forEach(function (c) { c.classList.remove("selected"); });
+
+                    // Selecionar atual
+                    card.classList.add("selected");
+                    selectedProfile = card.getAttribute("data-profile");
+
+                    // Mostrar banner de adaptação
+                    banner.style.display = "flex";
+
+                    // Habilitar botão continuar
+                    btnContinuar.disabled = false;
+                });
+            });
+
+            btnVoltar.addEventListener("click", function () {
+                window.location.href = FGI.buildUrl("student.html", state);
+            });
+
+            btnContinuar.addEventListener("click", function () {
+                if (selectedProfile) {
+                    state.profile = selectedProfile;
+                    
+                    // Aplicar presets de configuração automaticamente
+                    var presets = FGI.getPresetsForProfile(selectedProfile);
+                    state.time = presets.time;
+                    state.sound = presets.sound;
+                    state.narrator = presets.narrator;
+                    state.difficulty = presets.difficulty;
+
+                    window.location.href = FGI.buildUrl("config.html", state);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
