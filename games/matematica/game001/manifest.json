@@ -1,0 +1,34 @@
+{
+  "id": "mat-game001",
+  "nome": "Jogo da Soma",
+  "descricao": "Aprenda a somar arrastando o número correto para o resultado da conta.",
+  "disciplina": "matematica",
+  "tipo": "aritmetica",
+  "subtipo": "soma",
+  "icone": "➕",
+  "mascote": "🐢",
+  "corTema": "#4CAF50",
+
+  "nivelDificuldade": ["facil", "medio", "dificil"],
+  "nivelMinimo": 1,
+  "nivelMaximo": 3,
+
+  "perfilCompativel": ["T", "T1", "T2", "T3", "TD", "DX"],
+  "requisitosPrevios": [],
+  "habilidades": ["contagem", "soma", "raciocinio-logico"],
+
+  "tempoEstimado": {
+    "facil": "5 min",
+    "medio": "8 min",
+    "dificil": "12 min"
+  },
+
+  "totalPerguntas": 8,
+  "interacao": "drag-and-drop",
+  "fallbackTeclado": false,
+  "sonsProcedurais": true,
+
+  "versao": "1.0.0",
+  "autor": "FGI",
+  "dataCriacao": "2026-07-06"
+}

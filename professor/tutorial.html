@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial - FGI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .tutorial-illustration {
+            background-color: var(--color-bg-app);
+            border-radius: var(--radius-md);
+            padding: 32px;
+            margin: 24px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px dashed var(--color-primary-light);
+            position: relative;
+        }
+
+        .mock-sum {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 32px;
+            margin-bottom: 24px;
+            user-select: none;
+        }
+
+        .mock-target {
+            width: 60px;
+            height: 60px;
+            border: 3px dashed var(--color-primary);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            background: white;
+            font-size: 28px;
+        }
+
+        .mock-options {
+            display: flex;
+            gap: 16px;
+        }
+
+        .mock-card-option {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            box-shadow: var(--shadow-sm);
+            font-size: 24px;
+        }
+
+        .mock-arrow {
+            position: absolute;
+            font-size: 36px;
+            color: var(--color-primary);
+            animation: pointMove 1.5s infinite ease-in-out;
+            pointer-events: none;
+            top: 60px;
+            left: 55%;
+        }
+
+        @keyframes pointMove {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(-30px, -50px) scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.8;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <header class="app-header">
+            <div class="logo-container">
+                <span class="logo-emoji" aria-hidden="true">🧩</span>
+                <span class="logo-text">FGI — Atendimento</span>
+            </div>
+            <div style="text-align: right; font-size: 16px;">
+                <div>Aluno: <span id="header-student-name" class="game-meta-value">-</span></div>
+                <div>Perfil: <span id="header-profile-name" class="game-meta-value">-</span></div>
+            </div>
+        </header>
+
+        <!-- Barra de Progresso do Fluxo -->
+        <div class="step-progress"></div>
+
+        <main class="card">
+            <h1 class="app-title" style="margin-bottom: 8px;">Como Jogar: Jogo da Soma</h1>
+            <p class="app-subtitle" style="margin-bottom: 24px;">Veja a instrução abaixo antes de começarmos.</p>
+
+            <div class="tutorial-illustration">
+                <!-- Simulação de Arrasto no Jogo -->
+                <div class="mock-sum">
+                    <div style="display:flex; gap:4px;">🍎 🍎</div>
+                    <div>+</div>
+                    <div>🍎</div>
+                    <div>=</div>
+                    <div class="mock-target">?</div>
+                </div>
+
+                <div class="mock-options">
+                    <div class="mock-card-option">2</div>
+                    <div class="mock-card-option" style="border-color: var(--color-primary);">3</div>
+                    <div class="mock-card-option">5</div>
+                </div>
+
+                <div class="mock-arrow" aria-hidden="true">👆</div>
+            </div>
+
+            <p style="text-align: center; font-weight: 500; font-size: 20px; color: var(--color-text-main); margin-bottom: 32px;">
+                Conte as maçãs na tela e <strong>arraste</strong> o cartão com o número correto para dentro do quadrado com a interrogação.
+            </p>
+
+            <!-- Botões de Ação -->
+            <div class="btn-group">
+                <button id="btn-voltar" class="btn btn-secondary">
+                    <span aria-hidden="true">←</span> Voltar
+                </button>
+                <button id="btn-comecar" class="btn btn-primary">
+                    Começar Atividade <span aria-hidden="true">→</span>
+                </button>
+            </div>
+        </main>
+
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Inicializar progresso: Passo 2
+            FGI.updateStepProgress(2);
+
+            var state = FGI.getState();
+
+            // Atualizar cabeçalho
+            document.getElementById("header-student-name").textContent = state.student || "Lucas";
+            document.getElementById("header-profile-name").textContent = state.profile || "TEA Nível 1";
+
+            var btnVoltar = document.getElementById("btn-voltar");
+            var btnComecar = document.getElementById("btn-comecar");
+
+            btnVoltar.addEventListener("click", function () {
+                window.location.href = FGI.buildUrl("sessao.html", state);
+            });
+
+            btnComecar.addEventListener("click", function () {
+                window.location.href = FGI.buildUrl("game.html", state);
+            });
+        });
+    </script>
+</body>
+</html>

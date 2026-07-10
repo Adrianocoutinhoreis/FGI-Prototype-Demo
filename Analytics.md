@@ -24,16 +24,16 @@ Adicionar no `js/app.js` e nas páginas:
 
 | Evento | Trigger | Parâmetros |
 |--------|---------|------------|
-| `sessao_iniciada` | `config.html` — botão Iniciar Jogo | `aluno`, `perfil` |
-| `perfil_selecionado` | `config.html` — filtro "Perfil de Apoio" | `perfil` |
-| `configuracao_definida` | `config.html` — formulário submit | `tempo`, `som`, `dificuldade` |
-| `jogo_finalizado` | `game.html` — listener `GAME_FINISHED` | `aluno`, `perfil`, `acertos`, `erros`, `duracao` |
-| `relatorio_visualizado` | `result.html` — DOMContentLoaded | `aluno`, `aproveitamento` |
+| `sessao_iniciada` | `professor/sessao.html` — botão Iniciar Jogo | `aluno`, `perfil` |
+| `perfil_selecionado` | `professor/sessao.html` — filtro "Perfil de Apoio" | `perfil` |
+| `configuracao_definida` | `professor/sessao.html` — formulário submit | `tempo`, `som`, `dificuldade` |
+| `jogo_finalizado` | `professor/game.html` — listener `GAME_FINISHED` | `aluno`, `perfil`, `acertos`, `erros`, `duracao` |
+| `relatorio_visualizado` | `professor/resultado.html` — DOMContentLoaded | `aluno`, `aproveitamento` |
 
 ## Exemplo de Envio
 
 ```javascript
-// Em game.html, dentro do listener GAME_FINISHED
+// Em professor/game.html, dentro do listener GAME_FINISHED
 gtag('event', 'jogo_finalizado', {
   aluno: state.student,
   perfil: state.profile,

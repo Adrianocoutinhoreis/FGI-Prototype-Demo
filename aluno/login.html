@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso do Aluno - FGI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        html, body { height: 100%; }
+
+        .login-split {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            font-family: var(--font-family);
+        }
+
+        /* ── Painel lateral (marca) ── */
+        .login-side {
+            flex: 1 1 42%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(155deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+            color: #ffffff;
+        }
+
+        .login-side::before, .login-side::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+        }
+        .login-side::before { width: 320px; height: 320px; top: -100px; left: -100px; }
+        .login-side::after { width: 420px; height: 420px; bottom: -160px; right: -140px; background: rgba(255, 255, 255, 0.07); }
+
+        .login-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .login-shape.s1 { width: 90px; height: 90px; top: 18%; right: 14%; }
+        .login-shape.s2 { width: 46px; height: 46px; bottom: 22%; left: 12%; background: rgba(255, 255, 255, 0.14); }
+
+        .login-brand {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .login-brand-icon {
+            font-size: 60px;
+            display: block;
+            margin-bottom: 18px;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.15));
+        }
+
+        .login-brand-title {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .login-brand-tag {
+            font-size: 15px;
+            line-height: 1.6;
+            opacity: 0.9;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .login-brand-icons {
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+            margin-top: 28px;
+            font-size: 24px;
+            opacity: 0.85;
+        }
+
+        /* ── Painel principal (formulário) ── */
+        .login-main {
+            flex: 1 1 58%;
+            background: var(--color-bg-app);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .login-card { width: 100%; max-width: 380px; }
+
+        .login-logo-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+        .login-logo-row .logo-emoji { font-size: 28px; }
+        .login-logo-row .logo-text { font-size: 18px; font-weight: 700; color: var(--color-primary); }
+
+        .login-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--color-text-main);
+            margin-bottom: 4px;
+        }
+
+        .login-subtitle {
+            font-size: 15px;
+            color: var(--color-text-muted);
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .field-group { margin-bottom: 18px; }
+        .field-label {
+            display: block;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--color-text-main);
+            margin-bottom: 6px;
+        }
+        .field-input {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 16px;
+            font-family: var(--font-family);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            background: #fff;
+            color: var(--color-text-main);
+        }
+        .field-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+        .field-input.code-input {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 10px;
+        }
+
+        .login-helper-note {
+            font-size: 13px;
+            color: var(--color-text-muted);
+            background: var(--color-primary-light);
+            border: 1px solid var(--color-primary);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            margin-bottom: 22px;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .login-back {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--color-text-muted);
+            text-decoration: none;
+        }
+        .login-back:hover { color: var(--color-primary); }
+
+        @media (max-width: 760px) {
+            .login-split { flex-direction: column; }
+            .login-side { flex: 0 0 auto; padding: 28px 20px; min-height: 160px; }
+            .login-brand { padding: 0; }
+            .login-brand-icon { font-size: 40px; margin-bottom: 8px; }
+            .login-brand-title { font-size: 22px; }
+            .login-brand-tag { display: none; }
+            .login-brand-icons { display: none; }
+            .login-main { flex: 1 1 auto; padding: 28px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-split">
+
+        <div class="login-side">
+            <span class="login-shape s1" aria-hidden="true"></span>
+            <span class="login-shape s2" aria-hidden="true"></span>
+            <div class="login-brand">
+                <span class="login-brand-icon" aria-hidden="true">🧩</span>
+                <div class="login-brand-title">FGI</div>
+                <p class="login-brand-tag">Framework de Jogos Inclusivos — acompanhamento pedagógico simples e acolhedor para turmas e alunos.</p>
+                <div class="login-brand-icons" aria-hidden="true">
+                    <span>📘</span><span>✏️</span><span>⭐</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-main">
+            <div class="login-card">
+                <div class="login-logo-row">
+                    <span class="logo-emoji" aria-hidden="true">🧩</span>
+                    <span class="logo-text">FGI — Área do Aluno</span>
+                </div>
+
+                <h1 class="login-title">Entrar para Jogar</h1>
+                <p class="login-subtitle">Digite o código que seu professor te passou.</p>
+
+                <div class="login-helper-note">
+                    <span aria-hidden="true">ℹ️</span>
+                    <span>Tela ilustrativa: o código ainda não está habilitado nesta versão do protótipo. Clique em "Entrar" para continuar.</span>
+                </div>
+
+                <form id="login-form">
+                    <div class="field-group">
+                        <label for="input-codigo" class="field-label">Código de Acesso</label>
+                        <input type="text" id="input-codigo" class="field-input code-input" placeholder="0000" maxlength="4" inputmode="numeric" autocomplete="off">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
+                </form>
+
+                <a href="../index.html" class="login-back">← Voltar ao início</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("login-form").addEventListener("submit", function (e) {
+                e.preventDefault();
+                window.location.href = "dashboard.html";
+            });
+        });
+    </script>
+</body>
+</html>

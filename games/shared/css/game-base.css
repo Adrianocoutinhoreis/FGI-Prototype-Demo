@@ -1,0 +1,46 @@
+/* ==========================================================================
+   FGI - Framework de Jogos Inclusivos
+   Estilos base compartilhados entre jogos (games/shared/css/game-base.css)
+   Disponível para novos jogos herdarem; os jogos já existentes não são
+   obrigados a usá-lo (não modificar a mecânica de jogos prontos).
+   ========================================================================== */
+
+:root {
+    --cor-primaria: #4CAF50;
+    --cor-acerto: #22C55E;
+    --cor-apoio: #F59E0B;
+    --cor-fundo: #F8FAFC;
+    --cor-texto: #1E293B;
+    --raio-borda: 16px;
+    --sombra-suave: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--cor-fundo); }
+
+/* Telas */
+.tela { display: none; min-height: 100vh; }
+.tela.ativa { display: flex; align-items: center; justify-content: center; }
+
+/* Cartões */
+.cartao { background: white; border-radius: var(--raio-borda); box-shadow: var(--sombra-suave); padding: 32px; }
+
+/* Botões */
+.botao-principal { background: var(--cor-primaria); color: white; border: none; border-radius: 12px; padding: 16px 32px; font-size: 18px; cursor: pointer; }
+.botao-secundario { background: transparent; color: var(--cor-texto); border: 2px solid #E2E8F0; border-radius: 12px; padding: 16px 32px; font-size: 18px; cursor: pointer; }
+
+/* Feedback */
+.feedback { padding: 16px; border-radius: 12px; font-size: 18px; font-weight: 600; text-align: center; min-height: 60px; }
+.feedback.acerto { background: #DCFCE7; color: #166534; }
+.feedback.apoio { background: #FEF3C7; color: #92400E; }
+
+/* Acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+    .cartao { padding: 20px; margin: 16px; }
+    .botao-principal, .botao-secundario { padding: 14px 24px; font-size: 16px; }
+}

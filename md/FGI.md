@@ -101,9 +101,17 @@ Utilizar:
 
 index.html
 
-Dashboard
+Tela de Login (escolha entre Professor ou Aluno — sem senha/código real, apenas navegação)
 
-↓
+↓ (Professor)                              ↓ (Aluno)
+
+professor/dashboard.html                    aluno/dashboard.html
+     │                                            │
+     ├── Novo Atendimento                         └── Jogos Disponíveis + Meu Progresso
+     ├── Meus Alunos (Histórico)
+     └── Alunos (login ilustrativo)
+
+↓ (fluxo do Novo Atendimento, dentro de professor/)
 
 Novo Atendimento
 
@@ -287,7 +295,7 @@ Organizar o projeto da seguinte forma.
 
 /
 
-index.html
+index.html (tela de login: Professor / Aluno)
 
 /css
 
@@ -297,17 +305,27 @@ style.css
 
 app.js
 
-/pages
+/professor
 
 dashboard.html
 
-config.html
+sessao.html (configuração do atendimento, com filtros de Aluno e Perfil de Apoio)
 
 tutorial.html
 
 game.html
 
-result.html
+resultado.html
+
+historico.html (Histórico de Desenvolvimento)
+
+login.html (acesso ilustrativo à área de Alunos)
+
+/aluno
+
+dashboard.html (jogos disponíveis + meu progresso)
+
+progresso.html
 
 /assets
 
@@ -317,6 +335,16 @@ result.html
 
 /games
 
+catalog.js (catálogo central de jogos por disciplina)
+
+/shared
+
+/css (estilos base compartilhados entre jogos)
+
+/js (funções compartilhadas entre jogos)
+
+/matematica
+
 /game001
 
 (index.html do jogo atual)
@@ -324,6 +352,12 @@ result.html
 (style.css)
 
 (script.js)
+
+manifest.json
+
+/portugues
+
+(reservado para jogos futuros de Português)
 
 ---
 
@@ -335,9 +369,9 @@ Ele não deve ser reescrito.
 
 Ele deve permanecer dentro da pasta:
 
-games/game001
+games/matematica/game001
 
-A página game.html deverá apenas carregá-lo dentro do GameContainer.
+A página professor/game.html deverá apenas carregá-lo dentro do GameContainer.
 
 O objetivo é demonstrar que futuramente a plataforma poderá possuir diversos jogos.
 
@@ -377,7 +411,7 @@ Não criar banco de dados.
 
 Não utilizar LocalStorage.
 
-Não criar autenticação.
+Não criar autenticação. As telas de login (raiz e professor/login.html) são apenas ilustrativas — qualquer clique em "Entrar" avança sem validar usuário/senha/código.
 
 ---
 

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Professor - FGI</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <header class="app-header">
+            <div class="logo-container">
+                <span class="logo-emoji" aria-hidden="true">🧩</span>
+                <span class="logo-text">FGI — Dashboard</span>
+            </div>
+            <a href="../index.html" class="btn btn-secondary" style="min-height: 44px; padding: 8px 16px;">Sair</a>
+        </header>
+
+        <main>
+            <h1 class="app-title" style="text-align: left; margin-left: 8px;">Painel de Controle</h1>
+            <p class="app-subtitle" style="text-align: left; margin-left: 8px; margin-bottom: 24px;">Selecione o que deseja fazer hoje.</p>
+
+            <div class="grid-2">
+                <!-- Novo Atendimento (Ativo) -->
+                <a href="sessao.html" class="interactive-card" style="text-decoration: none; padding: 24px 20px;">
+                    <div class="card-avatar">🚀</div>
+                    <div class="card-name" style="font-size: 22px;">Novo Atendimento</div>
+                    <div class="card-desc" style="font-size: 16px;">Inicie uma sessão de jogo adaptada para um aluno.</div>
+                </a>
+
+                <!-- Meus Alunos (Ativo) -->
+                <a href="historico.html" class="interactive-card" style="text-decoration: none; padding: 24px 20px;">
+                    <div class="card-avatar">👥</div>
+                    <div class="card-name" style="font-size: 22px;">Meus Alunos</div>
+                    <div class="card-desc" style="font-size: 16px;">Acesse o Histórico de Desenvolvimento com o progresso dos alunos por turma.</div>
+                </a>
+
+                <!-- Alunos (Ativo) -->
+                <a href="login.html" class="interactive-card" style="text-decoration: none; padding: 24px 20px;">
+                    <div class="card-avatar">👤</div>
+                    <div class="card-name" style="font-size: 22px;">Alunos</div>
+                    <div class="card-desc" style="font-size: 16px;">Gerencie o cadastro de alunos e suas turmas.</div>
+                </a>
+
+                <!-- Configurações (Inativo) -->
+                <div class="interactive-card disabled" style="padding: 24px 20px;">
+                    <div class="card-avatar">⚙️</div>
+                    <div class="card-name" style="font-size: 22px; color: var(--color-text-muted);">Configurações</div>
+                    <div class="card-desc" style="font-size: 16px;">Ajustes gerais do sistema e preferências globais de acessibilidade.</div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Adicionar evento nos botões inativos
+            var inativos = document.querySelectorAll(".interactive-card.disabled");
+            inativos.forEach(function (card) {
+                card.addEventListener("click", function () {
+                    FGI.showToast("Funcionalidade disponível nas próximas versões.");
+                });
+            });
+        });
+    </script>
+</body>
+</html>

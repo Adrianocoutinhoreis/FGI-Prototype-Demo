@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuração Avançada - FGI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Painel de configuração técnica — visual academico/profissional (grupos + parâmetros + JSON) */
+        .cfg-filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .cfg-filter-group { display: flex; align-items: center; gap: 8px; }
+        .cfg-filter-label { font-size: 13px; font-weight: 700; color: var(--color-text-muted); }
+        select.cfg-filter-select {
+            padding: 8px 12px; border: 2px solid var(--color-border); border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 600; background: #fff; color: var(--color-text-main);
+            cursor: pointer; min-width: 150px;
+        }
+        select.cfg-filter-select:focus { outline: none; border-color: var(--color-primary); }
+        .cfg-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .cfg-toolbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .cfg-profile-badge {
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: var(--color-primary-light);
+            color: var(--color-primary-hover);
+            font-family: 'Courier New', monospace;
+        }
+        .cfg-override-count {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: var(--color-success-light);
+            color: #065f46;
+        }
+        .cfg-override-count.has {
+            background: var(--color-warning-light);
+            color: #92400e;
+        }
+        .cfg-btn-sm {
+            padding: 8px 14px;
+            min-height: auto;
+            font-size: 13px;
+        }
+        .cfg-layout {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .cfg-sidebar {
+            width: 190px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .cfg-group-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            border: 1px solid transparent;
+            position: relative;
+        }
+        .cfg-group-item:hover { background: var(--color-bg-app); }
+        .cfg-group-item.active {
+            background: var(--color-primary-light);
+            color: var(--color-primary-hover);
+            border-color: var(--color-primary-light);
+        }
+        .cfg-group-item.disabled {
+            cursor: not-allowed;
+            color: var(--color-text-muted);
+            opacity: 0.55;
+        }
+        .cfg-group-item.disabled:hover { background: transparent; }
+        .cfg-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--color-text-main);
+            margin-top: 6px;
+        }
+        .cfg-section-header:first-child { margin-top: 0; }
+        .cfg-section-header:hover { background: var(--color-bg-app); }
+        .cfg-section-header.open { color: var(--color-primary-hover); }
+        .cfg-section-chevron {
+            font-size: 11px;
+            color: var(--color-text-muted);
+            transition: transform 0.15s ease;
+        }
+        .cfg-section-header.open .cfg-section-chevron { transform: rotate(90deg); }
+        .cfg-section-items {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-left: 6px;
+            margin-bottom: 4px;
+        }
+        .cfg-group-dot {
+            position: absolute;
+            right: 10px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--color-warning);
+            display: none;
+        }
+        .cfg-group-dot.show { display: block; }
+        .cfg-main { flex: 1; min-width: 0; }
+        .cfg-group-title { font-size: 17px; font-weight: 700; color: var(--color-text-main); margin-bottom: 2px; }
+        .cfg-group-desc { font-size: 13px; color: var(--color-text-muted); margin-bottom: 14px; }
+        .cfg-param-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 14px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            background: #fff;
+        }
+        .cfg-param-row.overridden {
+            border-color: var(--color-warning);
+            background: var(--color-warning-light);
+        }
+        .cfg-param-info { flex: 1; min-width: 0; }
+        .cfg-param-name { font-size: 14px; font-weight: 700; color: var(--color-text-main); }
+        .cfg-param-desc { font-size: 13px; color: var(--color-text-muted); margin-top: 2px; }
+        .cfg-param-preset { font-size: 11px; color: var(--color-text-muted); margin-top: 2px; display: none; }
+        .cfg-param-row.overridden .cfg-param-preset { display: block; }
+        .cfg-override-badge {
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: var(--color-warning);
+            color: #fff;
+            margin-left: 6px;
+            display: none;
+            vertical-align: middle;
+        }
+        .cfg-param-row.overridden .cfg-override-badge { display: inline-block; }
+        .cfg-param-control { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .cfg-reset-btn {
+            background: none;
+            border: none;
+            font-size: 13px;
+            cursor: pointer;
+            color: var(--color-text-muted);
+            display: none;
+            padding: 2px 4px;
+        }
+        .cfg-param-row.overridden .cfg-reset-btn { display: inline-block; }
+        .cfg-reset-btn:hover { color: var(--color-danger); }
+
+        .cfg-toggle { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
+        .cfg-toggle input { opacity: 0; width: 0; height: 0; }
+        .cfg-toggle-slider {
+            position: absolute; inset: 0; background: var(--color-border);
+            border-radius: 24px; cursor: pointer; transition: .2s;
+        }
+        .cfg-toggle-slider::before {
+            content: ''; position: absolute; width: 18px; height: 18px; left: 3px; bottom: 3px;
+            background: #fff; border-radius: 50%; transition: .2s; box-shadow: var(--shadow-sm);
+        }
+        .cfg-toggle input:checked + .cfg-toggle-slider { background: var(--color-primary); }
+        .cfg-toggle input:checked + .cfg-toggle-slider::before { transform: translateX(18px); }
+
+        select.cfg-select {
+            padding: 6px 10px; border: 2px solid var(--color-border); border-radius: var(--radius-sm);
+            font-size: 13px; background: #fff; color: var(--color-text-main); min-width: 110px; cursor: pointer;
+        }
+        select.cfg-select:focus { outline: none; border-color: var(--color-primary); }
+        input.cfg-num {
+            width: 76px; padding: 6px 10px; border: 2px solid var(--color-border); border-radius: var(--radius-sm);
+            font-size: 13px; text-align: right; color: var(--color-text-main);
+        }
+        input.cfg-num:focus { outline: none; border-color: var(--color-primary); }
+
+        .cfg-json-panel {
+            display: none; position: fixed; top: 0; right: 0; bottom: 0; width: 400px; max-width: 90vw;
+            background: #1e1e2e; z-index: 500; padding: 20px; overflow-y: auto;
+            box-shadow: -4px 0 20px rgba(0,0,0,.25);
+        }
+        .cfg-json-panel.open { display: block; }
+        .cfg-json-header { display: flex; justify-content: space-between; align-items: center; color: #c8d3f5; font-weight: 700; font-size: 14px; margin-bottom: 14px; }
+        .cfg-json-close { background: none; border: none; color: #888; font-size: 18px; cursor: pointer; }
+        .cfg-json-close:hover { color: #fff; }
+        #cfg-json-content { font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; color: #a9b8d8; white-space: pre-wrap; word-break: break-word; }
+        .json-key { color: #86bbd8; }
+        .json-str { color: #a9e79f; }
+        .json-num { color: #fac75a; }
+        .json-bool-true { color: #86bbd8; }
+        .json-bool-false { color: #f0957a; }
+
+        @media (max-width: 860px) {
+            .cfg-layout { flex-direction: column; }
+            .cfg-sidebar { width: 100%; }
+        }
+        @media (max-width: 480px) {
+            .cfg-filter-bar { flex-direction: column; align-items: stretch; }
+            .cfg-filter-group { flex-direction: column; align-items: stretch; }
+            select.cfg-filter-select { width: 100%; }
+            .cfg-toolbar { flex-direction: column; align-items: stretch; }
+            .cfg-toolbar-actions { justify-content: space-between; }
+            .cfg-param-row { flex-direction: column; align-items: stretch; }
+            .cfg-json-panel { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container" style="max-width: 1100px;">
+
+        <header class="app-header">
+            <div class="logo-container">
+                <span class="logo-emoji" aria-hidden="true">🧩</span>
+                <span class="logo-text">FGI — Atendimento</span>
+            </div>
+            <div style="text-align: right; font-size: 16px;">
+                <div>Aluno: <span id="header-student-name" class="game-meta-value">-</span></div>
+                <div>Perfil: <span id="header-profile-name" class="game-meta-value">-</span></div>
+            </div>
+        </header>
+
+        <!-- Barra de Progresso do Fluxo -->
+        <div class="step-progress"></div>
+
+        <main class="card">
+            <div class="cfg-filter-bar">
+                <div class="cfg-filter-group">
+                    <label for="cfg-turma-sel" class="cfg-filter-label">Turma</label>
+                    <select id="cfg-turma-sel" class="cfg-filter-select">
+                        <option value="">Todas as turmas</option>
+                        <option value="turma-a">1º Ano A</option>
+                        <option value="turma-b">2º Ano B</option>
+                    </select>
+                </div>
+                <div class="cfg-filter-group">
+                    <label for="cfg-student-sel" class="cfg-filter-label">Aluno</label>
+                    <select id="cfg-student-sel" class="cfg-filter-select">
+                        <option value="Lucas">Lucas</option>
+                        <option value="Maria">Maria</option>
+                        <option value="Pedro">Pedro</option>
+                        <option value="Ana">Ana</option>
+                    </select>
+                </div>
+                <div class="cfg-filter-group">
+                    <label for="cfg-profile-sel" class="cfg-filter-label">Perfil de Apoio</label>
+                    <select id="cfg-profile-sel" class="cfg-filter-select">
+                        <option value="Aluno típico">Aluno Típico</option>
+                        <option value="TEA Nível 1">TEA Nível 1</option>
+                        <option value="TEA Nível 2">TEA Nível 2</option>
+                        <option value="TEA Nível 3">TEA Nível 3</option>
+                        <option value="TDAH">TDAH</option>
+                        <option value="Dislexia">Dislexia</option>
+                    </select>
+                </div>
+                <span id="cfg-profile-badge" class="cfg-profile-badge">—</span>
+            </div>
+
+            <div class="cfg-toolbar">
+                <div>
+                    <h1 class="app-title" style="text-align:left; font-size:24px; margin-bottom:2px;">Configuração Técnica da Atividade</h1>
+                    <p class="app-subtitle" style="text-align:left; font-size:15px; margin-bottom:0;">Os parâmetros técnicos são aplicados automaticamente ao trocar o perfil de apoio. Ajustes manuais feitos abaixo ficam registrados como sobrescritas do padrão.</p>
+                </div>
+                <div class="cfg-toolbar-actions">
+                    <span id="cfg-override-count" class="cfg-override-count">✓ Sem ajustes</span>
+                    <button type="button" class="btn btn-secondary cfg-btn-sm" id="cfg-btn-reset">↺ Restaurar padrão</button>
+                    <button type="button" class="btn btn-secondary cfg-btn-sm" id="cfg-btn-json">{ } Ver JSON</button>
+                </div>
+            </div>
+
+            <div class="cfg-layout">
+                <nav class="cfg-sidebar" id="cfg-sidebar"></nav>
+                <div class="cfg-main" id="cfg-main"></div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="btn-group" style="margin-top: 24px;">
+                <button type="button" id="btn-voltar" class="btn btn-secondary">
+                    <span aria-hidden="true">←</span> Voltar
+                </button>
+                <button type="button" id="btn-iniciar" class="btn btn-primary">
+                    Iniciar Jogo <span aria-hidden="true">→</span>
+                </button>
+            </div>
+        </main>
+
+    </div>
+
+    <div class="cfg-json-panel" id="cfg-json-panel">
+        <div class="cfg-json-header">
+            <span>Especificação técnica (GameConfig)</span>
+            <button type="button" class="cfg-json-close" id="cfg-json-close">✕</button>
+        </div>
+        <pre id="cfg-json-content"></pre>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            FGI.updateStepProgress(1);
+
+            var state = FGI.getState();
+            state.student = state.student || "Lucas";
+            state.profile = state.profile || "TEA Nível 1";
+            document.getElementById("header-student-name").textContent = state.student;
+            document.getElementById("header-profile-name").textContent = state.profile;
+
+            // ── Turmas fictícias e seus alunos, usadas para filtrar o seletor de Aluno ──
+            var STUDENTS = ["Lucas", "Maria", "Pedro", "Ana"];
+            var TURMAS = [
+                { id: "turma-a", label: "1º Ano A", students: ["Lucas", "Ana"] },
+                { id: "turma-b", label: "2º Ano B", students: ["Maria", "Pedro"] }
+            ];
+
+            function studentsForTurma(turmaId) {
+                if (!turmaId) return STUDENTS;
+                var turma = TURMAS.find(function (t) { return t.id === turmaId; });
+                return turma ? turma.students : STUDENTS;
+            }
+
+            // ── Mapa de perfis do fluxo FGI para os códigos do GameConfig ──
+            var PROFILE_MAP = {
+                "Aluno típico": "T",
+                "TEA Nível 1": "T1",
+                "TEA Nível 2": "T2",
+                "TEA Nível 3": "T3",
+                "TDAH": "TD",
+                "Dislexia": "DX"
+            };
+
+            var PRESETS = {
+                T:  { timer:{enabled:true,visible:true,duration:180,pausable:false,countDown:true}, difficulty:{level:3,autoAdjust:true,minLevel:1,maxLevel:5}, audio:{sfxEnabled:true,narrationEnabled:false,narrationSpeed:'normal',narrationRepeatEnabled:false,bgMusicEnabled:true,negativeSound:true}, visual:{contrast:'normal',colorMode:'full',fontSize:'md',fontFamily:'default',animationsEnabled:true,pictogramsEnabled:false}, feedback:{type:'both',positiveReinforcement:'moderate',errorTolerance:'strict',showHints:true,hintDelay:30,celebrationEffect:'full'}, math:{mode:'symbolic',useAbacus:false,useColorBlocks:false,useNumberLine:true,useFingers:false,groupingSize:10}, help:{enabled:true,type:'text',alwaysVisible:false,stepByStep:false}, interaction:{clickTargetSize:'md',dragEnabled:true,confirmationRequired:false,inputMethod:'both'}, gamification:{enabled:true,showPoints:true,showMedals:true,mode:'mixed'}, ui:{focusMode:false,singleTaskMode:false,predictableStructure:false,simplifiedText:false,gameSpeed:'normal',distractionReduction:'none'} },
+                T1: { timer:{enabled:true,visible:false,duration:300,pausable:true,countDown:false}, difficulty:{level:2,autoAdjust:false,minLevel:1,maxLevel:3}, audio:{sfxEnabled:true,narrationEnabled:true,narrationSpeed:'slow',narrationRepeatEnabled:true,bgMusicEnabled:false,negativeSound:false}, visual:{contrast:'high',colorMode:'pastel',fontSize:'lg',fontFamily:'default',animationsEnabled:true,pictogramsEnabled:true}, feedback:{type:'visual',positiveReinforcement:'high',errorTolerance:'lenient',showHints:true,hintDelay:10,celebrationEffect:'simple'}, math:{mode:'both',useAbacus:true,useColorBlocks:true,useNumberLine:true,useFingers:true,groupingSize:5}, help:{enabled:true,type:'both',alwaysVisible:true,stepByStep:true}, interaction:{clickTargetSize:'lg',dragEnabled:true,confirmationRequired:false,inputMethod:'both'}, gamification:{enabled:true,showPoints:true,showMedals:true,mode:'individual'}, ui:{focusMode:true,singleTaskMode:true,predictableStructure:true,simplifiedText:true,gameSpeed:'slow',distractionReduction:'low'} },
+                T2: { timer:{enabled:false,visible:false,duration:600,pausable:true,countDown:false}, difficulty:{level:1,autoAdjust:false,minLevel:1,maxLevel:2}, audio:{sfxEnabled:true,narrationEnabled:true,narrationSpeed:'slow',narrationRepeatEnabled:true,bgMusicEnabled:false,negativeSound:false}, visual:{contrast:'high',colorMode:'pastel',fontSize:'xl',fontFamily:'default',animationsEnabled:false,pictogramsEnabled:true}, feedback:{type:'visual',positiveReinforcement:'high',errorTolerance:'lenient',showHints:true,hintDelay:5,celebrationEffect:'simple'}, math:{mode:'concrete',useAbacus:true,useColorBlocks:true,useNumberLine:true,useFingers:true,groupingSize:2}, help:{enabled:true,type:'both',alwaysVisible:true,stepByStep:true}, interaction:{clickTargetSize:'xl',dragEnabled:false,confirmationRequired:true,inputMethod:'touch'}, gamification:{enabled:true,showPoints:false,showMedals:true,mode:'individual'}, ui:{focusMode:true,singleTaskMode:true,predictableStructure:true,simplifiedText:true,gameSpeed:'slow',distractionReduction:'high'} },
+                T3: { timer:{enabled:false,visible:false,duration:600,pausable:true,countDown:false}, difficulty:{level:1,autoAdjust:false,minLevel:1,maxLevel:2}, audio:{sfxEnabled:true,narrationEnabled:true,narrationSpeed:'slow',narrationRepeatEnabled:true,bgMusicEnabled:false,negativeSound:false}, visual:{contrast:'high',colorMode:'monochrome',fontSize:'xl',fontFamily:'default',animationsEnabled:false,pictogramsEnabled:true}, feedback:{type:'visual',positiveReinforcement:'high',errorTolerance:'lenient',showHints:true,hintDelay:0,celebrationEffect:'none'}, math:{mode:'concrete',useAbacus:true,useColorBlocks:true,useNumberLine:true,useFingers:true,groupingSize:2}, help:{enabled:true,type:'audio',alwaysVisible:true,stepByStep:true}, interaction:{clickTargetSize:'xl',dragEnabled:false,confirmationRequired:true,inputMethod:'touch'}, gamification:{enabled:false,showPoints:false,showMedals:false,mode:'individual'}, ui:{focusMode:true,singleTaskMode:true,predictableStructure:true,simplifiedText:true,gameSpeed:'slow',distractionReduction:'high'} },
+                TD: { timer:{enabled:true,visible:true,duration:120,pausable:true,countDown:true}, difficulty:{level:2,autoAdjust:true,minLevel:1,maxLevel:5}, audio:{sfxEnabled:true,narrationEnabled:true,narrationSpeed:'normal',narrationRepeatEnabled:false,bgMusicEnabled:true,negativeSound:true}, visual:{contrast:'normal',colorMode:'full',fontSize:'md',fontFamily:'default',animationsEnabled:true,pictogramsEnabled:false}, feedback:{type:'both',positiveReinforcement:'high',errorTolerance:'moderate',showHints:true,hintDelay:20,celebrationEffect:'full'}, math:{mode:'symbolic',useAbacus:false,useColorBlocks:false,useNumberLine:true,useFingers:false,groupingSize:10}, help:{enabled:true,type:'both',alwaysVisible:false,stepByStep:false}, interaction:{clickTargetSize:'md',dragEnabled:true,confirmationRequired:false,inputMethod:'both'}, gamification:{enabled:true,showPoints:true,showMedals:true,mode:'competitive'}, ui:{focusMode:false,singleTaskMode:true,predictableStructure:true,simplifiedText:false,gameSpeed:'normal',distractionReduction:'low'} },
+                DX: { timer:{enabled:false,visible:false,duration:300,pausable:true,countDown:false}, difficulty:{level:2,autoAdjust:true,minLevel:1,maxLevel:4}, audio:{sfxEnabled:true,narrationEnabled:true,narrationSpeed:'slow',narrationRepeatEnabled:true,bgMusicEnabled:false,negativeSound:true}, visual:{contrast:'normal',colorMode:'full',fontSize:'xl',fontFamily:'dyslexic',animationsEnabled:true,pictogramsEnabled:true}, feedback:{type:'both',positiveReinforcement:'moderate',errorTolerance:'moderate',showHints:true,hintDelay:20,celebrationEffect:'simple'}, math:{mode:'both',useAbacus:false,useColorBlocks:false,useNumberLine:true,useFingers:false,groupingSize:5}, help:{enabled:true,type:'both',alwaysVisible:false,stepByStep:true}, interaction:{clickTargetSize:'lg',dragEnabled:true,confirmationRequired:false,inputMethod:'both'}, gamification:{enabled:true,showPoints:true,showMedals:true,mode:'individual'}, ui:{focusMode:false,singleTaskMode:false,predictableStructure:true,simplifiedText:true,gameSpeed:'normal',distractionReduction:'none'} }
+            };
+
+            var GROUPS = [
+                { id:'timer', category:'config', icon:'⏱', label:'Timer', desc:'Controla o cronômetro da sessão de jogo.', params:[
+                    {k:'enabled', label:'Ativar cronômetro', desc:'Ativa o cronômetro', type:'bool'},
+                    {k:'visible', label:'Exibir cronômetro', desc:'Exibe o timer na tela do aluno', type:'bool'},
+                    {k:'duration', label:'Duração', desc:'Duração em segundos (0 = sem limite)', type:'num', min:0, max:3600, step:30},
+                    {k:'pausable', label:'Permitir pausar', desc:'Permite pausar o timer', type:'bool'},
+                    {k:'countDown', label:'Contagem regressiva', desc:'Regressivo (true) ou crescente (false)', type:'bool'}
+                ]},
+                { id:'difficulty', category:'config', icon:'⚡', label:'Dificuldade', desc:'Nível de dificuldade e ajuste automático.', params:[
+                    {k:'level', label:'Nível inicial', desc:'Nível inicial (1 = fácil … 5 = avançado)', type:'select', opts:['1','2','3','4','5']},
+                    {k:'autoAdjust', label:'Ajuste automático', desc:'O sistema pode reajustar o nível automaticamente', type:'bool'},
+                    {k:'minLevel', label:'Nível mínimo', desc:'Nível mínimo permitido', type:'select', opts:['1','2','3']},
+                    {k:'maxLevel', label:'Nível máximo', desc:'Nível máximo permitido', type:'select', opts:['1','2','3','4','5']}
+                ]},
+                { id:'audio', category:'config', icon:'🔊', label:'Áudio', desc:'Efeitos sonoros, narração e música.', params:[
+                    {k:'sfxEnabled', label:'Efeitos sonoros', desc:'Efeitos sonoros ativos', type:'bool'},
+                    {k:'narrationEnabled', label:'Narração', desc:'Leitura em voz alta dos enunciados', type:'bool'},
+                    {k:'narrationSpeed', label:'Velocidade da narração', desc:'Velocidade da narração', type:'select', opts:['slow','normal','fast']},
+                    {k:'narrationRepeatEnabled', label:'Repetir narração', desc:'Botão de repetição da narração', type:'bool'},
+                    {k:'bgMusicEnabled', label:'Música de fundo', desc:'Música de fundo', type:'bool'},
+                    {k:'negativeSound', label:'Som de erro', desc:'Som de erro (recomendado desativar para TEA)', type:'bool'}
+                ]},
+                { id:'visual', category:'config', icon:'👁', label:'Visual', desc:'Contraste, cores, fonte e animações.', params:[
+                    {k:'contrast', label:'Contraste', desc:'Modo de contraste', type:'select', opts:['normal','high','inverted']},
+                    {k:'colorMode', label:'Modo de cor', desc:'Paleta de cores', type:'select', opts:['full','pastel','monochrome','reduced']},
+                    {k:'fontSize', label:'Tamanho da fonte', desc:'Tamanho base da fonte', type:'select', opts:['sm','md','lg','xl']},
+                    {k:'fontFamily', label:'Família da fonte', desc:'Família tipográfica', type:'select', opts:['default','dyslexic']},
+                    {k:'animationsEnabled', label:'Animações', desc:'Habilita animações', type:'bool'},
+                    {k:'pictogramsEnabled', label:'Pictogramas', desc:'Exibe pictogramas de apoio', type:'bool'}
+                ]},
+                { id:'feedback', category:'config', icon:'💬', label:'Feedback', desc:'Respostas, dicas e celebrações.', params:[
+                    {k:'type', label:'Tipo de feedback', desc:'Canal de feedback', type:'select', opts:['visual','audio','both']},
+                    {k:'positiveReinforcement', label:'Reforço positivo', desc:'Intensidade do reforço positivo', type:'select', opts:['low','moderate','high']},
+                    {k:'errorTolerance', label:'Tolerância a erros', desc:'Tolerância a erros antes de dica', type:'select', opts:['strict','moderate','lenient']},
+                    {k:'showHints', label:'Exibir dicas', desc:'Exibe dicas ao aluno', type:'bool'},
+                    {k:'hintDelay', label:'Atraso da dica', desc:'Segundos sem ação antes da dica (0 = imediata)', type:'num', min:0, max:60, step:5},
+                    {k:'celebrationEffect', label:'Efeito de celebração', desc:'Animação ao completar fase', type:'select', opts:['none','simple','full']}
+                ]},
+                { id:'math', category:'conteudo', icon:'🔢', label:'Matemática', desc:'Representação concreta, reta e ábaco.', params:[
+                    {k:'mode', label:'Modo de apresentação', desc:'Modo de apresentação dos números', type:'select', opts:['symbolic','concrete','both']},
+                    {k:'useAbacus', label:'Ábaco virtual', desc:'Ábaco virtual', type:'bool'},
+                    {k:'useColorBlocks', label:'Blocos coloridos', desc:'Blocos coloridos de valor posicional', type:'bool'},
+                    {k:'useNumberLine', label:'Reta numérica', desc:'Reta numérica visual permanente', type:'bool'},
+                    {k:'useFingers', label:'Contagem com dedos', desc:'Animação de dedos para contagem', type:'bool'},
+                    {k:'groupingSize', label:'Tamanho do agrupamento', desc:'Agrupamento visual', type:'select', opts:['2','5','10']}
+                ]},
+                { id:'help', category:'config', icon:'❓', label:'Ajuda', desc:'Botão de ajuda e modo passo a passo.', params:[
+                    {k:'enabled', label:'Ativar ajuda', desc:'Função de ajuda disponível', type:'bool'},
+                    {k:'type', label:'Tipo de ajuda', desc:'Formato do conteúdo de ajuda', type:'select', opts:['text','audio','both']},
+                    {k:'alwaysVisible', label:'Sempre visível', desc:'Botão sempre visível na tela', type:'bool'},
+                    {k:'stepByStep', label:'Passo a passo', desc:'Decompõe em sub-passos', type:'bool'}
+                ]},
+                { id:'interaction', category:'config', icon:'👆', label:'Interação', desc:'Alvos, drag & drop e método de entrada.', params:[
+                    {k:'clickTargetSize', label:'Tamanho dos alvos', desc:'Tamanho dos alvos clicáveis', type:'select', opts:['sm','md','lg','xl']},
+                    {k:'dragEnabled', label:'Arrastar e soltar', desc:'Permite arrastar (drag & drop)', type:'bool'},
+                    {k:'confirmationRequired', label:'Exigir confirmação', desc:'Confirmar antes de registrar resposta', type:'bool'},
+                    {k:'inputMethod', label:'Método de entrada', desc:'Método de entrada', type:'select', opts:['touch','mouse','both']}
+                ]},
+                { id:'gamification', category:'config', icon:'🏆', label:'Gamificação', desc:'Pontuação, medalhas e modo de jogo.', params:[
+                    {k:'enabled', label:'Ativar gamificação', desc:'Ativa gamificação', type:'bool'},
+                    {k:'showPoints', label:'Exibir pontuação', desc:'Exibe pontuação durante o jogo', type:'bool'},
+                    {k:'showMedals', label:'Exibir medalhas', desc:'Exibe medalhas conquistadas', type:'bool'},
+                    {k:'mode', label:'Modo de interação', desc:'Modo de interação', type:'select', opts:['individual','cooperative','competitive','mixed']}
+                ]},
+                { id:'ui', category:'config', icon:'🖥', label:'Interface', desc:'Modo foco, tarefa única e velocidade.', params:[
+                    {k:'focusMode', label:'Modo foco', desc:'Remove decorações e menus não essenciais', type:'bool'},
+                    {k:'singleTaskMode', label:'Tarefa única', desc:'Um elemento de interação por vez', type:'bool'},
+                    {k:'predictableStructure', label:'Estrutura previsível', desc:'Layout fixo, sem surpresas visuais', type:'bool'},
+                    {k:'simplifiedText', label:'Texto simplificado', desc:'Enunciados simplificados', type:'bool'},
+                    {k:'gameSpeed', label:'Velocidade do jogo', desc:'Ritmo geral do jogo', type:'select', opts:['slow','normal','fast']},
+                    {k:'distractionReduction', label:'Redução de distrações', desc:'Redução de elementos visuais secundários', type:'select', opts:['none','low','high']}
+                ]}
+            ];
+
+            var profileCode = PROFILE_MAP[state.profile] || "T1";
+            var presetConfig = deepCopy(PRESETS[profileCode]);
+            var currentConfig = deepCopy(PRESETS[profileCode]);
+            var activeGroup = "timer";
+            var expandedSections = { conteudo: false, config: true };
+
+            function deepCopy(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+            function isOverridden(groupId, paramK) {
+                return String(presetConfig[groupId][paramK]) !== String(currentConfig[groupId][paramK]);
+            }
+
+            function groupHasOverride(groupId) {
+                return GROUPS.find(function (g) { return g.id === groupId; }).params.some(function (p) {
+                    return isOverridden(groupId, p.k);
+                });
+            }
+
+            function totalOverrides() {
+                return GROUPS.reduce(function (n, g) {
+                    return n + g.params.filter(function (p) { return isOverridden(g.id, p.k); }).length;
+                }, 0);
+            }
+
+            function groupItemHtml(g) {
+                return '<div class="cfg-group-item' + (g.id === activeGroup ? ' active' : '') + '" data-group="' + g.id + '">' +
+                    '<span aria-hidden="true">' + g.icon + '</span><span>' + g.label + '</span>' +
+                    '<span class="cfg-group-dot' + (groupHasOverride(g.id) ? ' show' : '') + '" id="dot-' + g.id + '"></span></div>';
+            }
+
+            function sectionHeaderHtml(sectionId, icon, label) {
+                var expanded = expandedSections[sectionId];
+                return '<div class="cfg-section-header' + (expanded ? ' open' : '') + '" data-section="' + sectionId + '">' +
+                    '<span><span aria-hidden="true">' + icon + '</span> ' + label + '</span>' +
+                    '<span class="cfg-section-chevron" aria-hidden="true">▸</span></div>';
+            }
+
+            function renderSidebar() {
+                var sb = document.getElementById("cfg-sidebar");
+                var conteudoGroups = GROUPS.filter(function (g) { return g.category === "conteudo"; });
+                var configGroups = GROUPS.filter(function (g) { return g.category === "config"; });
+                
+                sb.innerHTML =
+                    sectionHeaderHtml("conteudo", "📂", "Conteúdo") +
+                    (expandedSections.conteudo ?
+                        '<div class="cfg-section-items">' +
+                        conteudoGroups.map(groupItemHtml).join("") +
+                        '<div class="cfg-group-item disabled" data-disabled="true"><span aria-hidden="true">🔤</span><span>Português</span></div>' +
+                        '</div>' : "") +
+                    sectionHeaderHtml("config", "⚙️", "Configuração") +
+                    (expandedSections.config ?
+                        '<div class="cfg-section-items">' +
+                        configGroups.map(groupItemHtml).join("") +
+                        '</div>' : "");
+
+                sb.querySelectorAll(".cfg-section-header").forEach(function (header) {
+                    header.addEventListener("click", function () {
+                        var section = header.getAttribute("data-section");
+                        expandedSections[section] = !expandedSections[section];
+                        renderSidebar();
+                    });
+                });
+                sb.querySelectorAll(".cfg-group-item[data-group]").forEach(function (item) {
+                    item.addEventListener("click", function () {
+                        activeGroup = item.getAttribute("data-group");
+                        renderSidebar();
+                        renderGroup();
+                    });
+                });
+                var disabledItem = sb.querySelector(".cfg-group-item.disabled");
+                if (disabledItem) {
+                    disabledItem.addEventListener("click", function () {
+                        FGI.showToast("Funcionalidade disponível nas próximas versões.");
+                    });
+                }
+            }
+
+            function updateSidebarDot(groupId) {
+                var dot = document.getElementById("dot-" + groupId);
+                if (dot) dot.className = "cfg-group-dot" + (groupHasOverride(groupId) ? " show" : "");
+            }
+
+            function renderGroup() {
+                var group = GROUPS.find(function (g) { return g.id === activeGroup; });
+                var main = document.getElementById("cfg-main");
+                main.innerHTML = '<div class="cfg-group-title">' + group.icon + ' ' + group.label + '</div>' +
+                    '<div class="cfg-group-desc">' + group.desc + '</div>' +
+                    group.params.map(function (p) { return renderParamRow(group.id, p); }).join("");
+                attachRowHandlers(group.id);
+            }
+
+            function renderParamRow(groupId, param) {
+                var cur = currentConfig[groupId][param.k];
+                var preset = presetConfig[groupId][param.k];
+                var over = String(cur) !== String(preset);
+                return '<div class="cfg-param-row' + (over ? ' overridden' : '') + '" id="row-' + groupId + '-' + param.k + '">' +
+                    '<div class="cfg-param-info">' +
+                    '<div class="cfg-param-name">' + param.label + '<span class="cfg-override-badge">ajustado</span></div>' +
+                    '<div class="cfg-param-desc">' + param.desc + '</div>' +
+                    '<div class="cfg-param-preset">padrão do perfil: <b>' + preset + '</b></div>' +
+                    '</div>' +
+                    '<div class="cfg-param-control">' + renderControl(groupId, param, cur) +
+                    '<button type="button" class="cfg-reset-btn" data-group="' + groupId + '" data-param="' + param.k + '" title="Restaurar padrão">↺</button>' +
+                    '</div></div>';
+            }
+
+            function renderControl(groupId, param, cur) {
+                var id = "ctrl-" + groupId + "-" + param.k;
+                if (param.type === "bool") {
+                    return '<label class="cfg-toggle"><input type="checkbox" id="' + id + '" data-group="' + groupId + '" data-param="' + param.k + '" data-type="bool"' + (cur ? " checked" : "") + '><span class="cfg-toggle-slider"></span></label>';
+                }
+                if (param.type === "select") {
+                    var opts = param.opts.map(function (o) {
+                        return '<option value="' + o + '"' + (String(cur) === String(o) ? " selected" : "") + '>' + o + '</option>';
+                    }).join("");
+                    return '<select class="cfg-select" id="' + id + '" data-group="' + groupId + '" data-param="' + param.k + '" data-type="select">' + opts + '</select>';
+                }
+                if (param.type === "num") {
+                    return '<input type="number" class="cfg-num" id="' + id + '" data-group="' + groupId + '" data-param="' + param.k + '" data-type="num" value="' + cur + '" min="' + param.min + '" max="' + param.max + '" step="' + param.step + '">';
+                }
+                return "";
+            }
+
+            function attachRowHandlers(groupId) {
+                document.querySelectorAll('[data-group="' + groupId + '"][data-param]').forEach(function (el) {
+                    if (el.tagName === "BUTTON") {
+                        el.addEventListener("click", function () {
+                            resetParam(el.getAttribute("data-group"), el.getAttribute("data-param"));
+                        });
+                        return;
+                    }
+                    var evt = el.tagName === "INPUT" && el.type === "checkbox" ? "change" : "change";
+                    el.addEventListener(evt, function () {
+                        var type = el.getAttribute("data-type");
+                        var val = type === "bool" ? el.checked : (type === "num" ? Number(el.value) : el.value);
+                        setValue(el.getAttribute("data-group"), el.getAttribute("data-param"), val);
+                    });
+                });
+            }
+
+            function setValue(groupId, paramK, val) {
+                currentConfig[groupId][paramK] = val;
+                var row = document.getElementById("row-" + groupId + "-" + paramK);
+                if (row) {
+                    var group = GROUPS.find(function (g) { return g.id === groupId; });
+                    var param = group.params.find(function (p) { return p.k === paramK; });
+                    row.outerHTML = renderParamRow(groupId, param);
+                    attachRowHandlers(groupId);
+                }
+                updateSidebarDot(groupId);
+                updateOverrideCount();
+                refreshJSONIfOpen();
+            }
+
+            function resetParam(groupId, paramK) {
+                currentConfig[groupId][paramK] = deepCopy(presetConfig[groupId][paramK]);
+                setValue(groupId, paramK, currentConfig[groupId][paramK]);
+            }
+
+            function resetAllToPreset() {
+                currentConfig = deepCopy(presetConfig);
+                renderSidebar();
+                renderGroup();
+                updateOverrideCount();
+                refreshJSONIfOpen();
+            }
+
+            function updateOverrideCount() {
+                var n = totalOverrides();
+                var el = document.getElementById("cfg-override-count");
+                if (n === 0) {
+                    el.textContent = "✓ Sem ajustes";
+                    el.className = "cfg-override-count";
+                } else {
+                    el.textContent = n + " ajuste" + (n > 1 ? "s" : "") + " manual" + (n > 1 ? "is" : "");
+                    el.className = "cfg-override-count has";
+                }
+            }
+
+            function buildOutput() {
+                var overrides = {};
+                GROUPS.forEach(function (g) {
+                    g.params.forEach(function (p) {
+                        if (isOverridden(g.id, p.k)) {
+                            if (!overrides[g.id]) overrides[g.id] = {};
+                            overrides[g.id][p.k] = currentConfig[g.id][p.k];
+                        }
+                    });
+                });
+                return {
+                    studentId: state.student || null,
+                    profile: profileCode,
+                    profileLabel: state.profile || null,
+                    gameConfig: currentConfig,
+                    overrides: Object.keys(overrides).length ? overrides : null
+                };
+            }
+
+            function syntaxHL(json) {
+                return json
+                    .replace(/("[\w]+")\s*:/g, '<span class="json-key">$1</span>:')
+                    .replace(/:\s*(".*?")/g, ': <span class="json-str">$1</span>')
+                    .replace(/:\s*(\d+\.?\d*)/g, ': <span class="json-num">$1</span>')
+                    .replace(/:\s*(true)/g, ': <span class="json-bool-true">$1</span>')
+                    .replace(/:\s*(false)/g, ': <span class="json-bool-false">$1</span>')
+                    .replace(/:\s*(null)/g, ': <span style="color:#aaa">$1</span>');
+            }
+
+            function updateJSON() {
+                document.getElementById("cfg-json-content").innerHTML = syntaxHL(JSON.stringify(buildOutput(), null, 2));
+            }
+
+            function refreshJSONIfOpen() {
+                if (document.getElementById("cfg-json-panel").classList.contains("open")) updateJSON();
+            }
+
+            document.getElementById("cfg-profile-badge").textContent = profileCode + " — " + state.profile;
+            renderSidebar();
+            renderGroup();
+            updateOverrideCount();
+
+            var turmaSel = document.getElementById("cfg-turma-sel");
+            var studentSel = document.getElementById("cfg-student-sel");
+            var profileSel = document.getElementById("cfg-profile-sel");
+            studentSel.value = state.student;
+            profileSel.value = state.profile;
+
+            function renderStudentOptions(turmaId) {
+                var list = studentsForTurma(turmaId);
+                var current = studentSel.value;
+                studentSel.innerHTML = list.map(function (name) {
+                    return '<option value="' + name + '">' + name + '</option>';
+                }).join("");
+                if (list.indexOf(current) !== -1) {
+                    studentSel.value = current;
+                } else {
+                    studentSel.value = list[0];
+                    state.student = studentSel.value;
+                    document.getElementById("header-student-name").textContent = state.student;
+                    refreshJSONIfOpen();
+                }
+            }
+
+            turmaSel.addEventListener("change", function () {
+                renderStudentOptions(turmaSel.value);
+            });
+
+            studentSel.addEventListener("change", function () {
+                state.student = studentSel.value;
+                document.getElementById("header-student-name").textContent = state.student;
+                refreshJSONIfOpen();
+            });
+
+            profileSel.addEventListener("change", function () {
+                state.profile = profileSel.value;
+                profileCode = PROFILE_MAP[state.profile] || "T1";
+                presetConfig = deepCopy(PRESETS[profileCode]);
+                currentConfig = deepCopy(PRESETS[profileCode]);
+                document.getElementById("header-profile-name").textContent = state.profile;
+                document.getElementById("cfg-profile-badge").textContent = profileCode + " — " + state.profile;
+                renderSidebar();
+                renderGroup();
+                updateOverrideCount();
+                refreshJSONIfOpen();
+            });
+
+            document.getElementById("cfg-btn-reset").addEventListener("click", resetAllToPreset);
+            document.getElementById("cfg-btn-json").addEventListener("click", function () {
+                document.getElementById("cfg-json-panel").classList.add("open");
+                updateJSON();
+            });
+            document.getElementById("cfg-json-close").addEventListener("click", function () {
+                document.getElementById("cfg-json-panel").classList.remove("open");
+            });
+
+            document.getElementById("btn-voltar").addEventListener("click", function () {
+                window.location.href = "dashboard.html";
+            });
+
+            document.getElementById("btn-iniciar").addEventListener("click", function () {
+                // O jogo (game001) só entende os parâmetros simples legados — traduzimos o GameConfig técnico para eles.
+                state.time = currentConfig.timer.enabled ? "2min" : "none";
+                state.sound = currentConfig.audio.sfxEnabled ? "on" : "off";
+                state.narrator = currentConfig.audio.narrationEnabled ? "on" : "off";
+                var lvl = Number(currentConfig.difficulty.level);
+                state.difficulty = lvl <= 2 ? "easy" : (lvl === 3 ? "medium" : "hard");
+
+                window.location.href = FGI.buildUrl("tutorial.html", state);
+            });
+        });
+    </script>
+</body>
+</html>
