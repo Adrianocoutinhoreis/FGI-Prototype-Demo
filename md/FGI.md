@@ -109,15 +109,7 @@ Novo Atendimento
 
 ↓
 
-Selecionar Aluno
-
-↓
-
-Selecionar Perfil
-
-↓
-
-Configuração
+Configuração (com filtros de Aluno e Perfil de Apoio)
 
 ↓
 
@@ -153,55 +145,29 @@ Os demais podem apresentar um aviso:
 
 ---
 
-# Seleção de aluno
-
-Utilizar alunos fictícios.
-
-Lucas
-
-Maria
-
-Pedro
-
-Ana
-
-Selecionar apenas um.
-
-Botão:
-
-Continuar
-
----
-
-# Perfil de Apoio
-
-Exibir cartões para:
-
-Aluno típico
-
-TEA Nível 1
-
-TEA Nível 2
-
-TEA Nível 3
-
-TDAH
-
-Dislexia
-
-Ao selecionar um perfil exibir uma pequena mensagem:
-
-"As configurações do jogo foram adaptadas para este perfil."
-
-Botão:
-
-Continuar
-
----
-
 # Configuração
 
-Criar uma tela simples contendo:
+Na mesma tela de configuração, exibir filtros para:
+
+Escola (rede): lista das escolas da rede em que o professor participa
+
+Turma: lista das turmas da escola selecionada
+
+Aluno (nome fictício: Lucas, Maria, Pedro ou Ana)
+
+Perfil de Apoio: Aluno típico, TEA Nível 1, TEA Nível 2, TEA Nível 3, TDAH, Dislexia
+
+Todo aluno cadastrado na base de dados começa, por padrão, com o perfil "Aluno Típico". O professor pode trocar o perfil de apoio manualmente na tela de Configuração; a troca não é permanente, vale apenas para a sessão/demonstração atual.
+
+Os filtros são em cascata: selecionar a Escola atualiza a lista de Turmas disponíveis; selecionar a Turma atualiza a lista de Alunos disponíveis.
+
+O professor só pode ver Escolas em que participa (dados fictícios), não a rede toda.
+
+Ao trocar o perfil, adaptar automaticamente os parâmetros do jogo para esse perfil.
+
+PENDENTE: filtro de Escola/Turma ainda não implementado no protótipo (planejado, apenas documentado aqui). A implementação deve seguir a mesma regra de dados fictícios e sem backend/banco de dados.
+
+Abaixo dos filtros, exibir os parâmetros técnicos da atividade:
 
 Tempo
 
@@ -335,10 +301,6 @@ app.js
 
 dashboard.html
 
-student.html
-
-profile.html
-
 config.html
 
 tutorial.html
@@ -408,6 +370,8 @@ Sem flashes
 # Dados
 
 Todos os dados podem ser simulados.
+
+Perfil inicial padrão de todo aluno na base: "Aluno Típico". Nenhum aluno nasce já classificado em um perfil de apoio (TEA, TDAH, Dislexia etc.) — essa classificação é sempre um ajuste feito pelo professor na tela de Configuração.
 
 Não criar banco de dados.
 

@@ -46,55 +46,6 @@
             return targetPage + "?" + params.toString();
         },
 
-        // Presets adaptativos baseados no Perfil de Apoio
-        getPresetsForProfile: function (profile) {
-            switch (profile) {
-                case "TEA Nível 3":
-                    return {
-                        time: "none",
-                        sound: "off",     // Evitar sobrecarga auditiva
-                        narrator: "on",   // Narração para auxílio cognitivo
-                        difficulty: "easy" // Nível inicial
-                    };
-                case "TEA Nível 2":
-                    return {
-                        time: "none",
-                        sound: "on",
-                        narrator: "on",
-                        difficulty: "easy"
-                    };
-                case "TEA Nível 1":
-                    return {
-                        time: "none",
-                        sound: "on",
-                        narrator: "on",
-                        difficulty: "medium"
-                    };
-                case "TDAH":
-                    return {
-                        time: "2min",      // Tempo limite para engajamento rápido
-                        sound: "on",
-                        narrator: "on",
-                        difficulty: "medium"
-                    };
-                case "Dislexia":
-                    return {
-                        time: "none",
-                        sound: "on",
-                        narrator: "on",   // Narração essencial para leitura
-                        difficulty: "medium"
-                    };
-                case "Aluno típico":
-                default:
-                    return {
-                        time: "none",
-                        sound: "on",
-                        narrator: "off",
-                        difficulty: "medium"
-                    };
-            }
-        },
-
         // Mostrar notificação Toast
         showToast: function (message) {
             var toast = document.getElementById("toast-notice");
@@ -117,7 +68,7 @@
             var progressContainer = document.querySelector(".step-progress");
             if (!progressContainer) return;
 
-            var steps = ["Aluno", "Perfil", "Configurar", "Jogar"];
+            var steps = ["Configurar", "Jogar"];
             progressContainer.innerHTML = "";
 
             for (var i = 0; i < steps.length; i++) {
