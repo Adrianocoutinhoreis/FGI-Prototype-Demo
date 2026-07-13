@@ -1,11 +1,11 @@
 {
-  "id": "mat-game001",
-  "nome": "Jogo da Soma",
-  "descricao": "Aprenda a somar arrastando o número correto para o resultado da conta.",
+  "id": "mat-game003",
+  "nome": "Jogo do Valor Posicional",
+  "descricao": "Aprenda a identificar unidade, dezena, centena e milhar em um número.",
   "disciplina": "matematica",
-  "tipo": "aritmetica",
-  "subtipo": "soma",
-  "icone": "➕",
+  "tipo": "numeracao",
+  "subtipo": "valor-posicional",
+  "icone": "🧮",
   "mascote": "🐢",
   "corTema": "#55a08a",
 
@@ -15,7 +15,7 @@
 
   "perfilCompativel": ["T", "T1", "T2", "T3", "TD", "DX"],
   "requisitosPrevios": [],
-  "habilidades": ["contagem", "soma", "raciocinio-logico"],
+  "habilidades": ["valor-posicional", "composicao-numerica", "raciocinio-logico"],
 
   "tempoEstimado": {
     "facil": "5 min",
@@ -30,5 +30,6 @@
 
   "versao": "1.0.0",
   "autor": "FGI",
-  "dataCriacao": "2026-07-06"
+  "dataCriacao": "2026-07-13",
+  "construidoComComponentes": true
 }

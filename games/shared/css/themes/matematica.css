@@ -1,0 +1,17 @@
+/* ==========================================================================
+   FGI - Tema: Matemática (games/shared/css/themes/matematica.css)
+   Carregar depois de game-base.css para sobrescrever a cor primária e o
+   fundo do jogo. Mesma paleta usada no game001 (Jogo da Soma).
+   ========================================================================== */
+
+:root {
+    --cor-primaria: #55a08a;       /* Verde */
+    --cor-primaria-escura: #3f8672;
+    --cor-primaria-clara: #dff0e8;
+
+    --cor-fundo-1: #ddefe6;
+    --cor-fundo-2: #d9e7f6;
+
+    --tema-mascote: "🐢";
+    --tema-icone: "➕";
+}

@@ -1,0 +1,56 @@
+/* ==========================================================================
+   FGI - Componente: HUD / Barra Superior (games/shared/css/components/hud.css)
+   ========================================================================== */
+
+.barra-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 640px;
+    margin-bottom: 1rem;
+    gap: 0.5rem;
+}
+
+.botao-icone {
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+    background-color: var(--cor-cartao);
+    border: 2px solid var(--cor-azul);
+    border-radius: 14px;
+    cursor: pointer;
+    color: var(--cor-texto);
+    transition: box-shadow 0.3s ease;
+}
+
+.botao-icone:hover,
+.botao-icone:focus-visible {
+    box-shadow: 0 0 0 3px rgba(127, 168, 217, 0.35);
+    outline: none;
+}
+
+.hud-timer {
+    font-weight: 700;
+    color: var(--cor-azul-escuro);
+}
+
+@media (max-width: 900px) {
+    .barra-topo { max-width: 560px; }
+}
+
+@media (max-width: 600px) {
+    /* Barra do topo: só os ícones, com área de toque confortável */
+    .texto-botao-topo { display: none; }
+
+    .botao-icone {
+        min-width: 48px;
+        min-height: 48px;
+        padding: 0.5rem 0.8rem;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-height: 520px) {
+    .barra-topo { margin-bottom: 0.3rem; }
+}

@@ -21,6 +21,7 @@
             return {
                 student: urlParams.get("student") || "",
                 profile: urlParams.get("profile") || "",
+                jogo: urlParams.get("jogo") || "mat-game001",
                 time: urlParams.get("time") || "none",
                 sound: urlParams.get("sound") || "on",
                 narrator: urlParams.get("narrator") || "on",
@@ -36,6 +37,7 @@
             var params = new URLSearchParams();
             if (state.student) params.set("student", state.student);
             if (state.profile) params.set("profile", state.profile);
+            if (state.jogo) params.set("jogo", state.jogo);
             if (state.time) params.set("time", state.time);
             if (state.sound) params.set("sound", state.sound);
             if (state.narrator) params.set("narrator", state.narrator);

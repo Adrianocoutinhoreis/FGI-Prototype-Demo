@@ -1,0 +1,70 @@
+/* ==========================================================================
+   FGI - Componente: Telas (games/shared/css/components/screens.css)
+   Requer games/shared/css/game-base.css carregado antes.
+   ========================================================================== */
+
+.tela {
+    display: none;
+    min-height: 100vh;
+    min-height: 100dvh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.tela.ativa {
+    display: flex;
+}
+
+/* O cartão surge devagar ao trocar de tela: marca a mudança de
+   contexto sem sobressalto */
+.tela.ativa .cartao {
+    animation: fgi-entrar-suave 0.6s ease both;
+}
+
+@keyframes fgi-entrar-suave {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.cartao {
+    background-color: var(--cor-cartao);
+    border-radius: var(--raio);
+    border-top: 8px solid var(--cor-primaria);
+    box-shadow: var(--sombra);
+    padding: 2rem;
+    width: 100%;
+    max-width: 640px;
+    text-align: center;
+}
+
+@media (max-width: 900px) {
+    .cartao { max-width: 560px; }
+}
+
+@media (max-width: 600px) {
+    .tela {
+        padding: 0.8rem;
+        justify-content: flex-start;
+        padding-top: 1rem;
+    }
+    .cartao { padding: 1.2rem 1rem; }
+}
+
+@media (max-height: 520px) {
+    .tela {
+        justify-content: flex-start;
+        padding: 0.4rem;
+    }
+    .cartao {
+        padding: 0.7rem 1rem;
+        border-top-width: 5px;
+    }
+}

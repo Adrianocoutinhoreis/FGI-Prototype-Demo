@@ -264,6 +264,11 @@
         <main class="card">
             <div class="cfg-filter-bar">
                 <div class="cfg-filter-group">
+                    <label for="cfg-game-sel" class="cfg-filter-label">Jogo</label>
+                    <select id="cfg-game-sel" class="cfg-filter-select">
+                    </select>
+                </div>
+                <div class="cfg-filter-group">
                     <label for="cfg-turma-sel" class="cfg-filter-label">Turma</label>
                     <select id="cfg-turma-sel" class="cfg-filter-select">
                         <option value="">Todas as turmas</option>
@@ -317,7 +322,7 @@
                     <span aria-hidden="true">←</span> Voltar
                 </button>
                 <button type="button" id="btn-iniciar" class="btn btn-primary">
-                    Iniciar Jogo <span aria-hidden="true">→</span>
+                    Salvar Configuração <span aria-hidden="true">✓</span>
                 </button>
             </div>
         </main>
@@ -333,6 +338,7 @@
     </div>
 
     <script src="../js/app.js"></script>
+    <script src="../games/catalog.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             FGI.updateStepProgress(1);
@@ -673,8 +679,32 @@
             var turmaSel = document.getElementById("cfg-turma-sel");
             var studentSel = document.getElementById("cfg-student-sel");
             var profileSel = document.getElementById("cfg-profile-sel");
+            var gameSel = document.getElementById("cfg-game-sel");
             studentSel.value = state.student;
             profileSel.value = state.profile;
+
+            // ── Preencher seletor de jogos a partir do catálogo ──
+            var catalogo = window.GAME_CATALOG || { matematica: [], portugues: [] };
+            var todosOsJogos = (catalogo.matematica || []).concat(catalogo.portugues || []);
+
+            todosOsJogos.forEach(function (jogo) {
+                var opt = document.createElement("option");
+                opt.value = jogo.id;
+                opt.textContent = jogo.icone + " " + jogo.nome;
+                gameSel.appendChild(opt);
+            });
+
+            if (state.jogo) {
+                gameSel.value = state.jogo;
+            } else if (todosOsJogos.length) {
+                state.jogo = todosOsJogos[0].id;
+                gameSel.value = state.jogo;
+            }
+
+            gameSel.addEventListener("change", function () {
+                state.jogo = gameSel.value;
+                refreshJSONIfOpen();
+            });
 
             function renderStudentOptions(turmaId) {
                 var list = studentsForTurma(turmaId);
@@ -725,18 +755,40 @@
             });
 
             document.getElementById("btn-voltar").addEventListener("click", function () {
-                window.location.href = "dashboard.html";
+                window.location.href = "../index.html";
             });
 
             document.getElementById("btn-iniciar").addEventListener("click", function () {
-                // O jogo (game001) só entende os parâmetros simples legados — traduzimos o GameConfig técnico para eles.
+                // Traduzir o GameConfig técnico para os parâmetros simples que os jogos entendem.
                 state.time = currentConfig.timer.enabled ? "2min" : "none";
                 state.sound = currentConfig.audio.sfxEnabled ? "on" : "off";
                 state.narrator = currentConfig.audio.narrationEnabled ? "on" : "off";
                 var lvl = Number(currentConfig.difficulty.level);
                 state.difficulty = lvl <= 2 ? "easy" : (lvl === 3 ? "medium" : "hard");
 
-                window.location.href = FGI.buildUrl("tutorial.html", state);
+                // Salvar configuração no localStorage para o aluno selecionado.
+                // A chave NÃO inclui o jogo: todos os jogos do aluno herdam
+                // automaticamente esta mesma configuração.
+                var studentName = document.getElementById("cfg-student-sel").value || state.student || "Lucas";
+                var profileName  = document.getElementById("cfg-profile-sel").value || state.profile || "";
+                var configData = {
+                    student:    studentName,
+                    profile:    profileName,
+                    time:       state.time,
+                    sound:      state.sound,
+                    narrator:   state.narrator,
+                    difficulty: state.difficulty,
+                    gameConfig: currentConfig
+                };
+                localStorage.setItem("fgi_config_" + studentName, JSON.stringify(configData));
+                // Salvar ponteiro para o último aluno configurado — usado pelo dashboard do aluno
+                localStorage.setItem("fgi_last_student", studentName);
+
+                FGI.showToast("Configurações salvas para " + studentName + "!");
+
+                setTimeout(function () {
+                    window.location.href = "../index.html";
+                }, 1200);
             });
         });
     </script>

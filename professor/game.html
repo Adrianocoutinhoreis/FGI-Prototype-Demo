@@ -36,6 +36,7 @@
     </div>
 
     <script src="../js/app.js"></script>
+    <script src="../games/catalog.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var state = FGI.getState();
@@ -51,8 +52,21 @@
                 level = 3;
             }
 
+            // Resolver o caminho do jogo escolhido a partir do catálogo central
+            // (mesmo esquema usado pela sessão do aluno) — cai para o game001 se
+            // o id não existir no catálogo ou não vier na URL.
+            function resolverCaminhoJogo(jogoId) {
+                var catalogo = window.GAME_CATALOG || {};
+                var todos = (catalogo.matematica || []).concat(catalogo.portugues || []);
+                for (var i = 0; i < todos.length; i++) {
+                    if (todos[i].id === jogoId) return todos[i].caminho;
+                }
+                return "matematica/game001/";
+            }
+
             // URL do Iframe com parâmetros de controle da sessão
-            var iframeUrl = "../games/matematica/game001/index.html?nivel=" + level + "&som=" + state.sound;
+            var caminhoJogo = resolverCaminhoJogo(state.jogo);
+            var iframeUrl = "../games/" + caminhoJogo + "index.html?nivel=" + level + "&som=" + state.sound;
             var frame = document.getElementById("game-frame");
             frame.src = iframeUrl;
 

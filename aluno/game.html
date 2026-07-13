@@ -36,12 +36,33 @@
     </div>
 
     <script src="../js/app.js"></script>
+    <script src="../games/catalog.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var state = FGI.getState();
 
+            // Resolver nome do aluno: ponteiro do professor > URL > fallback
+            var lastStudent = localStorage.getItem("fgi_last_student");
+            var studentName = lastStudent || state.student || "Lucas";
+
+            // ── Carregar config do aluno (fallback para localStorage) ──────────────
+            // Usado quando os parâmetros da URL não chegam completos.
+            if (!state.sound || !state.difficulty) {
+                var raw = localStorage.getItem("fgi_config_" + studentName);
+                if (raw) {
+                    try {
+                        var savedConfig = JSON.parse(raw);
+                        state.sound      = state.sound      || savedConfig.sound      || "on";
+                        state.narrator   = state.narrator   || savedConfig.narrator   || "on";
+                        state.difficulty = state.difficulty || savedConfig.difficulty || "easy";
+                        state.time       = state.time       || savedConfig.time       || "none";
+                        state.profile    = state.profile    || savedConfig.profile    || "";
+                    } catch(e) {}
+                }
+            }
+
             // Atualizar cabeçalho
-            document.getElementById("game-student-name").textContent = state.student || "Lucas";
+            document.getElementById("game-student-name").textContent = studentName;
 
             // Determinar nível com base na dificuldade configurada
             var level = 1;
@@ -51,8 +72,21 @@
                 level = 3;
             }
 
+            // Resolver o caminho do jogo escolhido a partir do catálogo central
+            // (mesmo esquema usado pela sessão do professor) — cai para o
+            // game001 se o id não existir no catálogo ou não vier na URL.
+            function resolverCaminhoJogo(jogoId) {
+                var catalogo = window.GAME_CATALOG || {};
+                var todos = (catalogo.matematica || []).concat(catalogo.portugues || []);
+                for (var i = 0; i < todos.length; i++) {
+                    if (todos[i].id === jogoId) return todos[i].caminho;
+                }
+                return "matematica/game001/";
+            }
+
             // URL do Iframe com parâmetros de controle da sessão
-            var iframeUrl = "../games/matematica/game001/index.html?nivel=" + level + "&som=" + state.sound;
+            var caminhoJogo = resolverCaminhoJogo(state.jogo);
+            var iframeUrl = "../games/" + caminhoJogo + "index.html?nivel=" + level + "&som=" + state.sound;
             var frame = document.getElementById("game-frame");
             frame.src = iframeUrl;
 
@@ -89,7 +123,7 @@
                     state.misses = event.data.misses;
                     state.duration = formatted;
 
-                    window.location.href = FGI.buildUrl("dashboard.html", state);
+                    window.location.href = FGI.buildUrl("resultado.html", state);
                 }
             });
 
@@ -113,3 +147,4 @@
     </script>
 </body>
 </html>
+

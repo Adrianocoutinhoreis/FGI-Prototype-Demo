@@ -1,0 +1,63 @@
+/* ==========================================================================
+   FGI - Componente: Botões (games/shared/css/components/buttons.css)
+   ========================================================================== */
+
+.botao-principal {
+    font-family: inherit;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 0.9rem 2.2rem;
+    background-color: var(--cor-primaria);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--raio);
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.5s ease, visibility 0.5s;
+}
+
+.botao-principal:hover,
+.botao-principal:focus-visible {
+    background-color: var(--cor-primaria-escura);
+    outline: none;
+}
+
+.botao-principal:focus-visible {
+    box-shadow: 0 0 0 3px rgba(85, 160, 138, 0.4);
+}
+
+.botao-secundario {
+    font-family: inherit;
+    font-size: 1.1rem;
+    padding: 0.9rem 2rem;
+    background-color: var(--cor-cartao);
+    color: var(--cor-texto);
+    border: 2px solid var(--cor-azul);
+    border-radius: var(--raio);
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+}
+
+.botao-secundario:hover,
+.botao-secundario:focus-visible {
+    box-shadow: 0 0 0 3px rgba(127, 168, 217, 0.35);
+    outline: none;
+}
+
+/* Mantém o espaço reservado mesmo invisível: nada se move na tela
+   quando o botão aparece (previsibilidade), evitando rolagem inesperada */
+.escondido {
+    visibility: hidden;
+    opacity: 0;
+}
+
+@media (max-width: 600px) {
+    .botao-principal,
+    .botao-secundario {
+        width: 100%;
+        max-width: 320px;
+    }
+}
+
+@media (max-height: 520px) {
+    .botao-principal { padding: 0.6rem 2rem; }
+}

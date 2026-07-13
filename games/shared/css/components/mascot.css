@@ -1,0 +1,63 @@
+/* ==========================================================================
+   FGI - Componente: Mascote (games/shared/css/components/mascot.css)
+   ========================================================================== */
+
+.mascote {
+    font-size: 3.4rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--cor-amarelo-claro);
+    border: 3px solid var(--cor-pessego);
+    border-radius: 50%;
+    margin-bottom: 0.8rem;
+    /* "Respiração" bem leve: ritmo calmo, amplitude mínima.
+       Só deve aparecer nas telas de início e fim — nunca durante a atividade */
+    animation: fgi-respirar 4s ease-in-out infinite alternate;
+}
+
+.mascote.pausado {
+    animation-play-state: paused;
+}
+
+@keyframes fgi-respirar {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-4px); }
+}
+
+/* Balão de fala opcional do mascote (GameComponents.mascot.say) */
+.mascote-fala {
+    background-color: var(--cor-cartao);
+    border: 2px solid var(--cor-borda);
+    border-radius: var(--raio);
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+    color: var(--cor-texto-suave);
+    animation: fgi-surgir 0.4s ease;
+}
+
+@keyframes fgi-surgir {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@media (max-width: 600px) {
+    .mascote {
+        font-size: 2.6rem;
+        width: 4.8rem;
+        height: 4.8rem;
+    }
+}
+
+@media (max-height: 520px) {
+    .mascote {
+        font-size: 2rem;
+        width: 3.6rem;
+        height: 3.6rem;
+        margin-bottom: 0.2rem;
+    }
+}

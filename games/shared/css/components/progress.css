@@ -1,0 +1,66 @@
+/* ==========================================================================
+   FGI - Componente: Progresso (games/shared/css/components/progress.css)
+   ========================================================================== */
+
+/* Variante "dots" (bolinhas) — jogos com questões fixas */
+.progresso {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.ponto {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #c3d4cd;
+    transition: background-color 0.4s ease;
+}
+
+.ponto.feito {
+    background-color: var(--cor-primaria);
+}
+
+/* Só a bolinha recém-conquistada dá um pulso único e discreto */
+.ponto.recem-feito {
+    animation: fgi-confirmar 0.6s ease;
+}
+
+@keyframes fgi-confirmar {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
+.ponto.atual {
+    background-color: var(--cor-azul);
+}
+
+@media (max-width: 600px) {
+    .ponto { width: 13px; height: 13px; }
+}
+
+/* Variante "bar" — jogos com progresso contínuo (ex: leitura) */
+.progresso-barra {
+    width: 100%;
+    max-width: 320px;
+    height: 12px;
+    background-color: #c3d4cd;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progresso-barra-preenchimento {
+    height: 100%;
+    background-color: var(--cor-primaria);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+/* Variante "percentage" — jogos com pontuação */
+.progresso-porcentagem {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--cor-primaria-escura);
+}

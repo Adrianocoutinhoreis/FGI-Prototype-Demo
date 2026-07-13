@@ -220,15 +220,84 @@
     </div>
 
     <script src="../js/app.js"></script>
+    <script src="../games/catalog.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // ── Jogos fictícios disponíveis, organizados por matéria ──
-            var GAMES = [
-                { subject: "matematica", icon: "➕", name: "Jogo da Soma", stars: 4, href: "tutorial.html" }
-            ];
+            var state = FGI.getState();
+
+            // ── Descobrir qual aluno está configurado ──────────────────────────────
+            // Prioridade:
+            //   1) fgi_last_student  → ponteiro salvo pelo professor no sessao.html
+            //   2) state.student     → nome vindo da URL (ex: login seletivo futuro)
+            //   3) fallback "Lucas"
+            var savedConfig  = null;
+            var lastStudent  = localStorage.getItem("fgi_last_student");
+            var studentName  = lastStudent || state.student || "Lucas";
+
+            // Carregar a config do aluno resolvido
+            var raw = localStorage.getItem("fgi_config_" + studentName);
+            if (raw) {
+                try { savedConfig = JSON.parse(raw); } catch(e) {}
+            }
+
+            // Se não encontrou config, tenta qualquer chave fgi_config_* como fallback
+            if (!savedConfig) {
+                for (var i = 0; i < localStorage.length; i++) {
+                    var k = localStorage.key(i);
+                    if (k && k.indexOf("fgi_config_") === 0) {
+                        try {
+                            var candidate = JSON.parse(localStorage.getItem(k));
+                            if (candidate && candidate.student) {
+                                savedConfig = candidate;
+                                studentName = candidate.student;
+                                break;
+                            }
+                        } catch(e) {}
+                    }
+                }
+            }
+
+            // ── Jogos disponíveis, lidos do catálogo central (games/catalog.js) ──
+            var catalogo = window.GAME_CATALOG || { matematica: [], portugues: [] };
+            var GAMES = (catalogo.matematica || []).map(function (jogo) {
+                return { subject: "matematica", id: jogo.id, icon: jogo.icone, name: jogo.nome, stars: 4 };
+            }).concat((catalogo.portugues || []).map(function (jogo) {
+                return { subject: "portugues", id: jogo.id, icon: jogo.icone, name: jogo.nome, stars: 4 };
+            }));
+
+            // ── Atualizar cabeçalho de boas-vindas ────────────────────────────────
+            // O perfil/condição do aluno é ocultado por questão ética —
+            // somente o nome é exibido na interface do aluno.
+            var greetingEl = document.querySelector(".aluno-header-card h1.app-title");
+            if (greetingEl) {
+                greetingEl.innerHTML = "Olá, " + studentName + "! 🧩";
+            }
+
             var SUBJECT_EMPTY_MSG = {
                 portugues: "🔤 Em breve! Novos jogos de Português estão a caminho."
             };
+
+            function jogar(jogoId) {
+                // Todos os jogos herdam a mesma configuração salva para o aluno
+                var params = {};
+                params.student    = studentName;
+                params.jogo       = jogoId;
+
+                if (savedConfig) {
+                    params.time       = savedConfig.time       || "none";
+                    params.sound      = savedConfig.sound      || "on";
+                    params.narrator   = savedConfig.narrator   || "on";
+                    params.difficulty = savedConfig.difficulty || "easy";
+                    params.profile    = savedConfig.profile    || "";
+                } else {
+                    params.time       = "none";
+                    params.sound      = "on";
+                    params.narrator   = "on";
+                    params.difficulty = "easy";
+                }
+
+                window.location.href = FGI.buildUrl("tutorial.html", params);
+            }
 
             function renderGames(subject) {
                 var grid = document.getElementById("games-grid");
@@ -245,9 +314,15 @@
                         '<span class="game-card-icon" aria-hidden="true">' + g.icon + "</span>" +
                         '<span class="game-card-name">' + g.name + "</span>" +
                         '<span class="game-card-stars" aria-hidden="true">' + "⭐".repeat(g.stars) + "</span>" +
-                        '<a href="' + g.href + '" class="btn btn-primary" style="margin-top: 8px;">Jogar</a>' +
+                        '<button type="button" class="btn btn-primary" style="margin-top: 8px;" data-jogo-id="' + g.id + '">Jogar</button>' +
                         "</div>";
                 }).join("");
+
+                grid.querySelectorAll("[data-jogo-id]").forEach(function (botao) {
+                    botao.addEventListener("click", function () {
+                        jogar(botao.getAttribute("data-jogo-id"));
+                    });
+                });
             }
 
             // Filtro de matéria

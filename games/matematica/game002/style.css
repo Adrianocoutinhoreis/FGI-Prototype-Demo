@@ -1,0 +1,214 @@
+/* ============================================================
+   Jogo da Subtração — estilo específico deste jogo
+   (o restante — telas, HUD, progresso, feedback, botões, mascote,
+   cartões de nível e resultados — vem de games/shared/css/*)
+   ============================================================ */
+
+.area-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.grupo-itens {
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    gap: 0.35rem;
+    justify-content: center;
+    background-color: var(--cor-primaria-clara);
+    border: 2px solid var(--cor-primaria);
+    border-radius: var(--raio);
+    padding: 0.8rem;
+    min-width: 5rem;
+    min-height: 3.4rem;
+}
+
+.item-visual {
+    font-size: 1.8rem;
+    line-height: 1;
+    animation: fgi-aparecer-item 0.5s ease both;
+}
+
+@keyframes fgi-aparecer-item {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.sinal {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--cor-primaria-escura);
+}
+
+.conta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.numero {
+    font-size: 2.6rem;
+    font-weight: 700;
+    background-color: var(--cor-azul-claro);
+    border: 2px solid var(--cor-azul);
+    border-radius: 16px;
+    padding: 0.3rem 1rem;
+    min-width: 3.9rem;
+}
+
+/* O quadradinho da resposta: alvo do arrastar e soltar */
+.interrogacao {
+    background-color: var(--cor-pessego-claro);
+    border: 3px dashed var(--cor-pessego);
+    color: var(--cor-texto-suave);
+    min-width: 5.2rem;
+    min-height: 4.3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.interrogacao.pronta {
+    background-color: var(--cor-acerto-fundo);
+    border: 3px solid var(--cor-acerto-borda);
+    color: var(--cor-primaria-escura);
+}
+
+.interrogacao.respondida {
+    background-color: var(--cor-acerto-fundo);
+    border: 3px solid var(--cor-acerto-borda);
+    color: var(--cor-primaria-escura);
+    animation: fgi-encaixar 0.5s ease;
+}
+
+@keyframes fgi-encaixar {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+.operador {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--cor-lavanda-escura);
+}
+
+/* ---------- Fichas de resposta (arrastáveis) ---------- */
+
+.opcoes {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.2rem;
+}
+
+.botao-opcao {
+    font-family: inherit;
+    font-size: 2rem;
+    font-weight: 700;
+    width: 5rem;
+    height: 5rem;
+    border-radius: var(--raio);
+    color: var(--cor-texto);
+    cursor: grab;
+    touch-action: none;
+    transition: box-shadow 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 3px 0 rgba(58, 74, 82, 0.15);
+}
+
+.botao-opcao:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 8px rgba(58, 74, 82, 0.18);
+}
+
+.botao-opcao.ficha-1 {
+    background-color: var(--cor-azul-claro);
+    border: 3px solid var(--cor-azul);
+}
+
+.botao-opcao.ficha-2 {
+    background-color: var(--cor-lavanda-clara);
+    border: 3px solid var(--cor-lavanda);
+}
+
+.botao-opcao.ficha-3 {
+    background-color: var(--cor-amarelo-claro);
+    border: 3px solid var(--cor-pessego);
+}
+
+.botao-opcao:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(127, 168, 217, 0.45);
+}
+
+.botao-opcao:disabled {
+    cursor: default;
+    opacity: 0.4;
+    box-shadow: none;
+}
+
+.botao-opcao.correta {
+    background-color: var(--cor-acerto-fundo);
+    border-color: var(--cor-acerto-borda);
+    color: var(--cor-primaria-escura);
+    opacity: 1;
+}
+
+.botao-opcao.tentar-novamente {
+    background-color: var(--cor-pessego-claro);
+    border-color: var(--cor-pessego);
+}
+
+.botao-opcao.origem-arrasto {
+    opacity: 0.3;
+    cursor: grabbing;
+}
+
+/* Cópia da ficha que segue o dedo ou o mouse durante o arrasto */
+.fantasma {
+    position: fixed;
+    margin: 0;
+    z-index: 100;
+    pointer-events: none;
+    cursor: grabbing;
+    transform: scale(1.06);
+    box-shadow: 0 8px 18px rgba(58, 74, 82, 0.25);
+}
+
+.fantasma.voltando {
+    transition: left 0.3s ease, top 0.3s ease;
+}
+
+@media (max-width: 600px) {
+    .area-visual { gap: 0.6rem; margin-bottom: 1rem; }
+    .grupo-itens { padding: 0.6rem; min-width: 70px; min-height: 50px; gap: 0.25rem; }
+    .item-visual { font-size: 1.35rem; }
+    .sinal { font-size: 1.8rem; }
+    .conta { gap: 0.5rem; margin-bottom: 1.2rem; }
+    .numero { font-size: 1.9rem; min-width: 3.4rem; padding: 0.25rem 0.6rem; }
+    .interrogacao { min-width: 4.75rem; min-height: 4rem; }
+    .operador { font-size: 1.7rem; }
+    .opcoes { gap: 0.7rem; }
+    .botao-opcao { width: 4.9rem; height: 4.9rem; font-size: 1.7rem; }
+}
+
+@media (max-width: 370px) {
+    .numero { font-size: 1.6rem; min-width: 2.9rem; padding: 0.2rem 0.5rem; }
+    .interrogacao { min-width: 4rem; min-height: 3.5rem; }
+    .operador { font-size: 1.4rem; }
+    .botao-opcao { width: 4.4rem; height: 4.4rem; font-size: 1.5rem; }
+    .conta { gap: 0.35rem; }
+}
+
+@media (max-height: 520px) {
+    .grupo-itens { grid-template-columns: repeat(10, auto); }
+    .area-visual { margin-bottom: 0.6rem; }
+    .conta { margin-bottom: 0.6rem; }
+}

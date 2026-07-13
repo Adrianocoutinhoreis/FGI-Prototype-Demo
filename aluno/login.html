@@ -234,6 +234,9 @@
         document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("login-form").addEventListener("submit", function (e) {
                 e.preventDefault();
+                // Redireciona para o dashboard sem passar nome na URL.
+                // O dashboard lê automaticamente o aluno configurado mais recentemente
+                // pelo professor a partir do localStorage (chave fgi_config_[nome]).
                 window.location.href = "dashboard.html";
             });
         });

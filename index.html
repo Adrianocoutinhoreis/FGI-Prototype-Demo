@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FGI - Framework de Jogos Inclusivos</title>
+    <title>FGI — Framework de Jogos Inclusivos</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-text-main);
+            margin: 0 0 14px;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="app-container" style="max-width: 700px;">
+    <div class="app-container">
 
         <header class="app-header" style="justify-content: center;">
             <div class="logo-container">
@@ -18,20 +26,28 @@
         </header>
 
         <main>
-            <h1 class="app-title">Quem está acessando?</h1>
-            <p class="app-subtitle" style="margin-bottom: 24px;">Escolha seu perfil de acesso para continuar.</p>
+            <h1 class="app-title" style="text-align: left; margin-left: 8px;">Painel de Controle</h1>
+            <p class="app-subtitle" style="text-align: left; margin-left: 8px; margin-bottom: 24px;">Selecione uma das opções abaixo para gerenciar atendimentos ou acessar a área do aluno.</p>
 
-            <div class="grid-2">
-                <a href="professor/dashboard.html" class="interactive-card" style="text-decoration: none; padding: 32px 20px;">
-                    <div class="card-avatar">👨‍🏫</div>
-                    <div class="card-name" style="font-size: 22px;">Professor</div>
-                    <div class="card-desc" style="font-size: 16px;">Configure sessões, acompanhe turmas e veja relatórios.</div>
+            <!-- Ações -->
+            <div class="section-title" style="margin-top: 12px;">📋 Ações</div>
+            <div class="grid-3">
+                <a href="professor/sessao.html" class="interactive-card" style="text-decoration: none; padding: 24px 20px;">
+                    <div class="card-avatar">🚀</div>
+                    <div class="card-name" style="font-size: 22px;">Novo Atendimento</div>
+                    <div class="card-desc" style="font-size: 16px;">Configure parâmetros e inicie uma sessão de jogo.</div>
                 </a>
 
-                <a href="aluno/login.html" class="interactive-card" style="text-decoration: none; padding: 32px 20px;">
+                <a href="aluno/login.html" class="interactive-card" style="text-decoration: none; padding: 24px 20px;">
                     <div class="card-avatar">👦</div>
                     <div class="card-name" style="font-size: 22px;">Aluno</div>
                     <div class="card-desc" style="font-size: 16px;">Jogue as atividades liberadas e veja seu progresso.</div>
+                </a>
+
+                <a href="professor/historico.html" class="interactive-card" style="text-decoration: none; padding: 24px 20px;">
+                    <div class="card-avatar">👥</div>
+                    <div class="card-name" style="font-size: 22px;">Meus Alunos</div>
+                    <div class="card-desc" style="font-size: 16px;">Acesse o histórico de desenvolvimento por turma.</div>
                 </a>
             </div>
         </main>

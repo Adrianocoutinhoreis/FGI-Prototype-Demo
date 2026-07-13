@@ -1,0 +1,17 @@
+/* ==========================================================================
+   FGI - Tema: Português (games/shared/css/themes/portugues.css)
+   Carregar depois de game-base.css para sobrescrever a cor primária e o
+   fundo do jogo.
+   ========================================================================== */
+
+:root {
+    --cor-primaria: #7fa8d9;       /* Azul */
+    --cor-primaria-escura: #4f7cb3;
+    --cor-primaria-clara: #e1ecfa;
+
+    --cor-fundo-1: #e1ecfa;
+    --cor-fundo-2: #ece7f8;
+
+    --tema-mascote: "🦉";
+    --tema-icone: "🔤";
+}

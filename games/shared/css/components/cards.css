@@ -1,0 +1,69 @@
+/* ==========================================================================
+   FGI - Componente: Cartões de nível (games/shared/css/components/cards.css)
+   ========================================================================== */
+
+.rotulo-nivel {
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.escolha-nivel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.botao-nivel {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem 1.2rem;
+    font-family: inherit;
+    font-size: 1.1rem;
+    border-radius: var(--raio);
+    cursor: pointer;
+    transition: filter 0.3s ease, box-shadow 0.3s ease;
+    text-align: left;
+    color: var(--cor-texto);
+}
+
+/* Cada nível tem sua própria cor suave — ajuda a reconhecer e escolher */
+.botao-nivel[data-nivel="1"] {
+    background-color: var(--cor-primaria-clara);
+    border: 3px solid var(--cor-primaria);
+}
+
+.botao-nivel[data-nivel="2"] {
+    background-color: var(--cor-azul-claro);
+    border: 3px solid var(--cor-azul);
+}
+
+.botao-nivel[data-nivel="3"] {
+    background-color: var(--cor-lavanda-clara);
+    border: 3px solid var(--cor-lavanda);
+}
+
+.botao-nivel:hover,
+.botao-nivel:focus-visible {
+    filter: brightness(0.97);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(85, 160, 138, 0.35);
+}
+
+.icone-nivel {
+    font-size: 2rem;
+}
+
+.texto-nivel {
+    display: flex;
+    flex-direction: column;
+}
+
+.texto-nivel small {
+    color: var(--cor-texto-suave);
+}
+
+@media (max-width: 600px) {
+    .botao-nivel { padding: 0.9rem 1rem; }
+}

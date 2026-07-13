@@ -28,16 +28,22 @@ games/
 │   │   ├── style.css
 │   │   └── manifest.json
 │   │
-│   ├── game003/                    # Jogo da Multiplicação
+│   ├── game003/                    # Jogo do Valor Posicional (já existe)
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   ├── style.css
+│   │   └── manifest.json
+│   │
+│   ├── game004/                    # Jogo da Multiplicação
 │   │   └── ...
 │   │
-│   ├── game004/                    # Jogo da Divisão
+│   ├── game005/                    # Jogo da Divisão
 │   │   └── ...
 │   │
-│   ├── game005/                    # Jogo de Frações
+│   ├── game006/                    # Jogo de Frações
 │   │   └── ...
 │   │
-│   └── game006/                    # Jogo de Geometria
+│   └── game007/                    # Jogo de Geometria
 │       └── ...
 │
 ├── portugues/
@@ -184,43 +190,54 @@ var GAME_CATALOG = {
     },
     {
       id: "mat-game003",
+      nome: "Jogo do Valor Posicional",
+      descricao: "Identifique unidade, dezena, centena e milhar",
+      icone: "🧮",
+      caminho: "matematica/game003/",
+      nivelMinimo: 1,
+      nivelMaximo: 3,
+      perfilCompativel: ["T", "T1", "T2", "T3", "TD", "DX", "DC", "DI"],
+      habilidades: ["valor-posicional", "composicao-numerica"]
+    },
+    {
+      id: "mat-game004",
       nome: "Jogo da Multiplicação",
       descricao: "Aprenda a multiplicar",
       icone: "✖️",
-      caminho: "matematica/game003/",
+      caminho: "matematica/game004/",
       nivelMinimo: 1,
       nivelMaximo: 3,
       perfilCompativel: ["T", "T1", "T2", "TD"],
       habilidades: ["multiplicacao", "tabuada"]
     },
     {
-      id: "mat-game004",
+      id: "mat-game005",
       nome: "Jogo da Divisão",
       descricao: "Aprenda a dividir",
       icone: "➗",
-      caminho: "matematica/game004/",
+      caminho: "matematica/game005/",
       nivelMinimo: 1,
       nivelMaximo: 3,
       perfilCompativel: ["T", "T1", "T2", "TD"],
       habilidades: ["divisao", "raciocinio"]
     },
     {
-      id: "mat-game005",
+      id: "mat-game006",
       nome: "Jogo de Frações",
       descricao: "Aprenda sobre frações",
       icone: "🔢",
-      caminho: "matematica/game005/",
+      caminho: "matematica/game006/",
       nivelMinimo: 1,
       nivelMaximo: 3,
       perfilCompativel: ["T", "T1", "T2"],
       habilidades: ["fracoes", "representacao"]
     },
     {
-      id: "mat-game006",
+      id: "mat-game007",
       nome: "Jogo de Geometria",
       descricao: "Aprenda sobre formas",
       icone: "🔷",
-      caminho: "matematica/game006/",
+      caminho: "matematica/game007/",
       nivelMinimo: 1,
       nivelMaximo: 3,
       perfilCompativel: ["T", "T1", "T2", "T3", "TD", "DX", "DC", "DI"],
@@ -443,10 +460,11 @@ function jogosLiberados(liberados) {
 |----|------|------|-------|--------|-------------|
 | `mat-game001` | Jogo da Soma | Aritmética | 1-3 | Todos | contagem, soma |
 | `mat-game002` | Jogo da Subtração | Aritmética | 1-3 | Todos | contagem, subtracao |
-| `mat-game003` | Jogo da Multiplicação | Aritmética | 1-3 | T, T1, T2, TD | multiplicacao, tabuada |
-| `mat-game004` | Jogo da Divisão | Aritmética | 1-3 | T, T1, T2, TD | divisao, raciocinio |
-| `mat-game005` | Jogo de Frações | Números | 1-3 | T, T1, T2 | fracoes, representacao |
-| `mat-game006` | Jogo de Geometria | Formas | 1-3 | Todos | formas, espacial |
+| `mat-game003` | Jogo do Valor Posicional | Numeração | 1-3 | Todos | valor-posicional, composicao-numerica |
+| `mat-game004` | Jogo da Multiplicação | Aritmética | 1-3 | T, T1, T2, TD | multiplicacao, tabuada |
+| `mat-game005` | Jogo da Divisão | Aritmética | 1-3 | T, T1, T2, TD | divisao, raciocinio |
+| `mat-game006` | Jogo de Frações | Números | 1-3 | T, T1, T2 | fracoes, representacao |
+| `mat-game007` | Jogo de Geometria | Formas | 1-3 | Todos | formas, espacial |
 
 ### Português
 
@@ -624,11 +642,17 @@ body { font-family: 'Inter', sans-serif; background: var(--cor-fundo); }
 
 ## Próximos Passos
 
-1. Criar estrutura de pastas `games/matematica/` e `games/portugues/`
-2. Mover `games/game001/` para `games/matematica/game001/`
-3. Criar `games/shared/` com estilos e funções compartilhadas
-4. Criar `games/catalog.js` com o catálogo de jogos
-5. Criar `manifest.json` para o jogo existente (game001)
+1. ✅ Criar estrutura de pastas `games/matematica/` e `games/portugues/`
+2. ✅ Mover `games/game001/` para `games/matematica/game001/`
+3. ✅ Criar `games/shared/` com estilos e funções compartilhadas (ver `md/PLANEJAMENTO_COMPONENTES.md`)
+4. ✅ Criar `games/catalog.js` com o catálogo de jogos
+5. ✅ Criar `manifest.json` para o jogo existente (game001)
 6. Criar tela de seleção de jogos no `professor/sessao.html`
 7. Criar dashboard do aluno com cards de jogos liberados
 8. Desenvolver novos jogos seguindo o padrão estabelecido
+   - ✅ `mat-game002` — Jogo da Subtração
+   - ✅ `mat-game003` — Jogo do Valor Posicional
+   - `mat-game004` — Jogo da Multiplicação
+   - `mat-game005` — Jogo da Divisão
+   - `mat-game006` — Jogo de Frações
+   - `mat-game007` — Jogo de Geometria

@@ -1,0 +1,36 @@
+/* ==========================================================================
+   FGI - Componente: Feedback (games/shared/css/components/feedback.css)
+   ========================================================================== */
+
+.feedback {
+    min-height: 2.2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.feedback.acerto {
+    color: var(--cor-primaria-escura);
+}
+
+.feedback.apoio {
+    color: var(--cor-pessego-escuro);
+}
+
+/* A mensagem surge num fade único, sem saltar */
+.feedback.acerto,
+.feedback.apoio {
+    animation: fgi-surgir-feedback 0.45s ease;
+}
+
+@keyframes fgi-surgir-feedback {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@media (max-height: 520px) {
+    .feedback {
+        min-height: 1.6rem;
+        margin-bottom: 0.5rem;
+    }
+}
