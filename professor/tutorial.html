@@ -18,7 +18,9 @@
             position: relative;
         }
 
-        .mock-sum {
+        .mock-sum,
+        .mock-sub,
+        .mock-vp {
             display: flex;
             align-items: center;
             gap: 16px;
@@ -70,6 +72,38 @@
             left: 55%;
         }
 
+        .mock-vp-table {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .mock-vp-cell {
+            width: 70px;
+            height: 80px;
+            background: white;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .mock-vp-label {
+            font-size: 11px;
+            color: var(--color-text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .mock-vp-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
         @keyframes pointMove {
             0% {
                 transform: translate(0, 0) scale(1);
@@ -101,37 +135,16 @@
             </div>
         </header>
 
-        <!-- Barra de Progresso do Fluxo -->
         <div class="step-progress"></div>
 
         <main class="card">
-            <h1 class="app-title" style="margin-bottom: 8px;">Como Jogar: Jogo da Soma</h1>
+            <h1 class="app-title" style="margin-bottom: 8px;" id="tutorial-title">Como Jogar</h1>
             <p class="app-subtitle" style="margin-bottom: 24px;">Veja a instrução abaixo antes de começarmos.</p>
 
-            <div class="tutorial-illustration">
-                <!-- Simulação de Arrasto no Jogo -->
-                <div class="mock-sum">
-                    <div style="display:flex; gap:4px;">🍎 🍎</div>
-                    <div>+</div>
-                    <div>🍎</div>
-                    <div>=</div>
-                    <div class="mock-target">?</div>
-                </div>
+            <div class="tutorial-illustration" id="tutorial-illustration"></div>
 
-                <div class="mock-options">
-                    <div class="mock-card-option">2</div>
-                    <div class="mock-card-option" style="border-color: var(--color-primary);">3</div>
-                    <div class="mock-card-option">5</div>
-                </div>
+            <p style="text-align: center; font-weight: 500; font-size: 20px; color: var(--color-text-main); margin-bottom: 32px;" id="tutorial-instruction"></p>
 
-                <div class="mock-arrow" aria-hidden="true">👆</div>
-            </div>
-
-            <p style="text-align: center; font-weight: 500; font-size: 20px; color: var(--color-text-main); margin-bottom: 32px;">
-                Conte as maçãs na tela e <strong>arraste</strong> o cartão com o número correto para dentro do quadrado com a interrogação.
-            </p>
-
-            <!-- Botões de Ação -->
             <div class="btn-group">
                 <button id="btn-voltar" class="btn btn-secondary">
                     <span aria-hidden="true">←</span> Voltar
@@ -145,16 +158,42 @@
     </div>
 
     <script src="../js/app.js"></script>
+    <script src="../games/catalog.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Inicializar progresso: Passo 2
             FGI.updateStepProgress(2);
 
             var state = FGI.getState();
 
-            // Atualizar cabeçalho
             document.getElementById("header-student-name").textContent = state.student || "Lucas";
             document.getElementById("header-profile-name").textContent = state.profile || "TEA Nível 1";
+
+            var jogoId = state.jogo || "mat-game001";
+            var game = null;
+            var categories = Object.keys(GAME_CATALOG);
+
+            for (var c = 0; c < categories.length; c++) {
+                var list = GAME_CATALOG[categories[c]];
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].id === jogoId) {
+                        game = list[i];
+                        break;
+                    }
+                }
+                if (game) break;
+            }
+
+            if (!game || !game.tutorial) {
+                game = GAME_CATALOG.matematica[0];
+            }
+
+            var tutorial = game.tutorial;
+
+            document.getElementById("tutorial-title").textContent = tutorial.titulo;
+            document.getElementById("tutorial-instruction").innerHTML = tutorial.instrucao;
+
+            var illustrationEl = document.getElementById("tutorial-illustration");
+            illustrationEl.innerHTML = getIllustrationHTML(tutorial.tipo);
 
             var btnVoltar = document.getElementById("btn-voltar");
             var btnComecar = document.getElementById("btn-comecar");
@@ -167,6 +206,55 @@
                 window.location.href = FGI.buildUrl("game.html", state);
             });
         });
+
+        function getIllustrationHTML(tipo) {
+            switch (tipo) {
+                case "subtracao":
+                    return '<div class="mock-sub">' +
+                        '<div style="display:flex; gap:4px;">🍎 🍎 🍎</div>' +
+                        '<div>−</div>' +
+                        '<div>🍎</div>' +
+                        '<div>=</div>' +
+                        '<div class="mock-target">?</div>' +
+                        '</div>' +
+                        '<div class="mock-options">' +
+                        '<div class="mock-card-option">1</div>' +
+                        '<div class="mock-card-option" style="border-color: var(--color-primary);">2</div>' +
+                        '<div class="mock-card-option">3</div>' +
+                        '</div>' +
+                        '<div class="mock-arrow" aria-hidden="true">👆</div>';
+
+                case "valor-posicional":
+                    return '<div class="mock-vp-table">' +
+                        '<div class="mock-vp-cell"><span class="mock-vp-label">Milhar</span><span class="mock-vp-value">1</span></div>' +
+                        '<div class="mock-vp-cell"><span class="mock-vp-label">Centena</span><span class="mock-vp-value">2</span></div>' +
+                        '<div class="mock-vp-cell"><span class="mock-vp-label">Dezena</span><span class="mock-vp-value">3</span></div>' +
+                        '<div class="mock-vp-cell"><span class="mock-vp-label">Unidade</span><span class="mock-vp-value">?</span></div>' +
+                        '</div>' +
+                        '<div class="mock-options">' +
+                        '<div class="mock-card-option">4</div>' +
+                        '<div class="mock-card-option" style="border-color: var(--color-primary);">5</div>' +
+                        '<div class="mock-card-option">6</div>' +
+                        '</div>' +
+                        '<div class="mock-arrow" aria-hidden="true">👆</div>';
+
+                case "soma":
+                default:
+                    return '<div class="mock-sum">' +
+                        '<div style="display:flex; gap:4px;">🍎 🍎</div>' +
+                        '<div>+</div>' +
+                        '<div>🍎</div>' +
+                        '<div>=</div>' +
+                        '<div class="mock-target">?</div>' +
+                        '</div>' +
+                        '<div class="mock-options">' +
+                        '<div class="mock-card-option">2</div>' +
+                        '<div class="mock-card-option" style="border-color: var(--color-primary);">3</div>' +
+                        '<div class="mock-card-option">5</div>' +
+                        '</div>' +
+                        '<div class="mock-arrow" aria-hidden="true">👆</div>';
+            }
+        }
     </script>
 </body>
 </html>

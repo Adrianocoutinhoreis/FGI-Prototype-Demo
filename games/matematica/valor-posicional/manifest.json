@@ -1,0 +1,35 @@
+{
+  "id": "mat-game003",
+  "nome": "Jogo do Valor Posicional",
+  "descricao": "Aprenda a identificar unidade, dezena, centena e milhar em um número.",
+  "disciplina": "matematica",
+  "tipo": "numeracao",
+  "subtipo": "valor-posicional",
+  "icone": "🧮",
+  "mascote": "🐢",
+  "corTema": "#55a08a",
+
+  "nivelDificuldade": ["facil", "medio", "dificil"],
+  "nivelMinimo": 1,
+  "nivelMaximo": 3,
+
+  "perfilCompativel": ["T", "T1", "T2", "T3", "TD", "DX"],
+  "requisitosPrevios": [],
+  "habilidades": ["valor-posicional", "composicao-numerica", "raciocinio-logico"],
+
+  "tempoEstimado": {
+    "facil": "5 min",
+    "medio": "8 min",
+    "dificil": "12 min"
+  },
+
+  "totalPerguntas": 8,
+  "interacao": "drag-and-drop",
+  "fallbackTeclado": true,
+  "sonsProcedurais": true,
+
+  "versao": "1.0.0",
+  "autor": "FGI",
+  "dataCriacao": "2026-07-13",
+  "construidoComComponentes": true
+}

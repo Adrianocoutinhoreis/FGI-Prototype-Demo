@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Subtração</title>
+
+    <!-- Fundação + componentes compartilhados -->
+    <link rel="stylesheet" href="../../shared/css/game-base.css">
+    <link rel="stylesheet" href="../../shared/css/components/screens.css">
+    <link rel="stylesheet" href="../../shared/css/components/mascot.css">
+    <link rel="stylesheet" href="../../shared/css/components/cards.css">
+    <link rel="stylesheet" href="../../shared/css/components/buttons.css">
+    <link rel="stylesheet" href="../../shared/css/components/hud.css">
+    <link rel="stylesheet" href="../../shared/css/components/progress.css">
+    <link rel="stylesheet" href="../../shared/css/components/feedback.css">
+    <link rel="stylesheet" href="../../shared/css/components/results.css">
+
+    <!-- Tema da disciplina -->
+    <link rel="stylesheet" href="../../shared/css/themes/matematica.css">
+
+    <!-- CSS específico deste jogo (apenas o que é único: área visual, conta, fichas) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ===================== TELA INICIAL ===================== -->
+    <section id="tela-inicio" class="tela ativa">
+        <div class="cartao cartao-inicio">
+            <div id="mascote-container"></div>
+            <h1>Jogo da Subtração</h1>
+            <p class="subtitulo">Vamos subtrair juntos, no seu tempo.</p>
+
+            <div class="escolha-nivel" id="nivel-selector"></div>
+        </div>
+    </section>
+
+    <!-- ===================== TELA DO JOGO ===================== -->
+    <section id="tela-jogo" class="tela">
+        <div id="game-hud"></div>
+
+        <main class="cartao cartao-jogo">
+            <p id="instrucao" class="instrucao">Conte os desenhos e <strong>arraste</strong> o número certo até o quadradinho.</p>
+
+            <div class="area-visual" aria-hidden="true">
+                <div id="grupo-a" class="grupo-itens"></div>
+                <div class="sinal">−</div>
+                <div id="grupo-b" class="grupo-itens"></div>
+            </div>
+
+            <div class="conta" id="conta-texto">
+                <span id="numero-a" class="numero">5</span>
+                <span class="operador">−</span>
+                <span id="numero-b" class="numero">2</span>
+                <span class="operador">=</span>
+                <span id="interrogacao" class="numero interrogacao">?</span>
+            </div>
+
+            <div id="opcoes" class="opcoes"></div>
+
+            <div id="feedback" class="feedback"></div>
+
+            <button id="botao-proxima" class="botao-principal escondido">
+                Próxima <span aria-hidden="true">→</span>
+            </button>
+        </main>
+    </section>
+
+    <!-- ===================== TELA FINAL ===================== -->
+    <section id="tela-final" class="tela">
+        <div id="results-container"></div>
+    </section>
+
+    <!-- Componentes compartilhados -->
+    <script src="../../shared/js/utils.js"></script>
+    <script src="../../shared/js/components/config.js"></script>
+    <script src="../../shared/js/components/sound.js"></script>
+    <script src="../../shared/js/components/screens.js"></script>
+    <script src="../../shared/js/components/progress.js"></script>
+    <script src="../../shared/js/components/feedback.js"></script>
+    <script src="../../shared/js/components/dragdrop.js"></script>
+    <script src="../../shared/js/components/hud.js"></script>
+    <script src="../../shared/js/components/results.js"></script>
+    <script src="../../shared/js/components/mascot.js"></script>
+
+    <!-- Lógica específica deste jogo -->
+    <script src="script.js"></script>
+</body>
+</html>
